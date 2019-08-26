@@ -68,7 +68,7 @@
 3. `classify()` : Feature 데이터에 해당되는 posterior 값들(class 개수)을 불러와 비교하여 더 높은 확률을 갖는 class를 리턴
 4. `train()` : 트레이닝 데이터를 받아 학습합니다. 학습 후, 각 class에 해당하는 prior 값과 likelihood 값을 업데이트
 5. `pridict()` : 예측하고 싶은 문장의 전 처리된 행렬을 받아 예측된 class를 리턴
-6. `score()` : 테스트 데이터를 받아 에측된 데이터(predict 함수)와 테스트 데이터의 label값을 비교하여 정확도를 계산
+6. `score()` : 테스트 데이터를 받아 예측된 데이터(predict 함수)와 테스트 데이터의 label값을 비교하여 정확도를 계산
 
 
 
@@ -77,10 +77,10 @@
 > 이 과정을 심화 과정으로 Logistic regression algorithm의 심도있는 이해를 위하여 그 동작 과정을 구현합니다. 알고리즘은 Logistic_regression_Classifier 클래스를 구현하여 작동됩니다.
 
 1. `sigmoid()` : input 값의 sigmoid함수 값을 리턴
-2. `prediction()` : 가중치 값인 beta 값들을 받아서 에측 값 P(class=1|train data)을 계산. 예측 값 계산은 데이터와 가중치 간의 선형합의 logistic function 값으로 얻을 수 있음
+2. `prediction()` : 가중치 값인 beta 값들을 받아서 예측 값 P(class=1|train data)을 계산. 예측 값 계산은 데이터와 가중치 간의 선형합의 logistic function 값으로 얻을 수 있음
 3. `gradient_beta()` : 가중치 값인 beta 값에 해당되는 gradient 값을 계산하고 learning rate를 곱하여 출력. Gradient 값은 데이터 포인터에 대한 기울기를 의미하고 손실함수에 대한 가중치 값의 미분 형태로 얻을 수 있음
 4. `train()` : 트레이닝 데이터를 받아 학습. 학습 후 sigmoid 함수로 근사하는 최적의 가중치 값을 업데이트
-5. `predict()` : 예측하고 싶은 문장의 전 처리된 행렬을 받아 에측된 class를 리턴
+5. `predict()` : 예측하고 싶은 문장의 전 처리된 행렬을 받아 예측된 class를 리턴
 6. `score()` : 테스트 데이터를 받아 예측된 데이터(predict 함수)와 테스트 데이터의 label 값을 비교하여 정확도를 계산
 
 
@@ -164,7 +164,7 @@
 
 #### Req. 1-3  테스트 데이터 정확도 계산
 
-1. 특정 문장 데이터와 Naive bayes classifier, Logistic regression 모델을 통하여 에측된 결과 값을 출력
+1. 특정 문장 데이터와 Naive bayes classifier, Logistic regression 모델을 통하여 예측된 결과 값을 출력
 
    > 테스트 데이터 중 특정 문장과 예측된 분류 값 측정
 
@@ -269,7 +269,7 @@
 
    > input : 학습용 X 데이터, 학습용 label 데이터
 
-5. 전 처리된 문장 데이터의 에측 분류 값을 출력하는 predict() 함수 구현
+5. 전 처리된 문장 데이터의 예측 분류 값을 출력하는 predict() 함수 구현
 
    > input : 학습용 X 데이터
    >
@@ -279,7 +279,7 @@
 
    > input : 테스트용  X 데이터, 테스트용 label 데이터
    >
-   > output : 정확히 에측된 데이터 개수의 합 / 총 테스트 데이터 수
+   > output : 정확히 예측된 데이터 개수의 합 / 총 테스트 데이터 수
 
 7. Smoothing 기법을 적용하여 정확도 비교
 
