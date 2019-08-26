@@ -126,7 +126,7 @@
    >
    > test_data : 테스트용 문장 및 label 데이터
 
-2. 트레이닝, 테스트의 한글 문장 데이터를 KoNLPy를 사용한 tokenize() 함수를 이용하여 toeknization 구현
+2. 트레이닝, 테스트의 한글 문장 데이터를 KoNLPy를 사용한 tokenize() 함수를 이용하여 tokenization 구현
 
    > input : 텍스트 데이터
    >
