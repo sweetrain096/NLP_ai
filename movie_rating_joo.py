@@ -43,13 +43,21 @@ test_data = read_data('ratings_test2.txt')
 train_docs = [(tokenize(i[1]), i[2]) for i in train_data]
 test_docs = [(tokenize(i[1]), i[2]) for i in test_data]
 
-print(train_docs[1])
 
 
 # Req 1-1-3. word_indices 초기화
 word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
+
+for vocas in train_docs:
+     # print(vocas[0])
+     for voca in vocas[0]:
+         text = voca.split('/')[0]
+         if text not in word_indices:
+             word_indices[text] = len(word_indices)
+
+print(word_indices)
 
 
 
