@@ -117,9 +117,9 @@ print("Logistic regression example result: {}, {}".format(test_data[3][1], clf2.
 
 #
 # # Req 1-3-2. 정확도 출력
-# print("Naive bayesian classifier accuracy: {}".format(None))
-# print("Logistic regression accuracy: {}".format(None))
-#
+print("Naive bayesian classifier accuracy: {}".format(clf.score(X_test, Y_test)))
+print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
+
 # """
 # 데이터 저장 파트
 # """
