@@ -103,7 +103,8 @@ clf = MultinomialNB()
 clf.fit(X, Y)
 #
 # # Req 1-2-2. Logistic regresion mdoel 학습
-# clf2 = None
+clf2 = LogisticRegression()
+clf2.fit(X, Y)
 #
 #
 # """
