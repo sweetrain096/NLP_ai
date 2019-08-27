@@ -72,22 +72,25 @@ Y_test = np.zeros((len(test_data),))
 
 # # Req 1-1-5. one-hot 임베딩
 # # X,Y 벡터값 채우기
-def one_hot_encoding(w, word2index):
-    one_hot_vector = [0] * (len(word2index))
-    index = word2index.get(w)
-    if index is not None:
-        one_hot_vector[index] = 1
-
+def one_hot_encoding(vocas, word_indices):
+    one_hot_vector = [0]*(len(word_indices))
+    for (idx, voca) in enumerate(vocas[0]):
+        text = voca.split('/')[0]
+        index=word_indices.get(text)
+        if index is not None:
+            one_hot_vector[index]=1
     return one_hot_vector
 
 
-for (idx,lines) in enumerate(train_docs):
-    vocas = lines[0]
-    Y[idx] =lines[1]
-    for voca in vocas:
-        word = voca.split('/')[0]
-        label = lines[1]
-        X[idx] = one_hot_encoding(word, word_indices)
+for (idx1, vocas) in enumerate(train_docs):
+    X[idx1] = one_hot_encoding(vocas, word_indices)
+for (idx1, vocas) in enumerate(test_docs):
+    X_test[idx1] = one_hot_encoding(vocas, word_indices)
+
+for (idx1, vocas) in enumerate(train_docs):
+     Y[idx1] = vocas[1]
+for (idx1, vocas) in enumerate(test_docs):
+     Y_test[idx1] = vocas[1]
 
 # """
 # 트레이닝 파트
@@ -96,7 +99,8 @@ for (idx,lines) in enumerate(train_docs):
 # """
 #
 # # Req 1-2-1. Naive baysian mdoel 학습
-# clf = None
+clf = MultinomialNB()
+clf.fit(X, Y)
 #
 # # Req 1-2-2. Logistic regresion mdoel 학습
 # clf2 = None
