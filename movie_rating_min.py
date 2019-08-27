@@ -38,5 +38,15 @@ test_data = read_data('ratings_test.txt')
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
-train_docs = [(tokenize(row[1]), row[2]) for row in train_data]
+train_docs = [tokenize(row[1]) for row in train_data]
 test_docs = [(tokenize(row[1]), row[2]) for row in test_data]
+
+# Req 1-1-3. word_indices 초기화
+word_indices = {}
+
+# Req 1-1-3. word_indices 채우기
+for voca in train_docs[0]:
+    if voca not in word_indices.keys():
+        word_indices[voca]=len(word_indices)
+
+print(word_indices)
