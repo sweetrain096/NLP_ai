@@ -89,21 +89,22 @@ for n in range(len(test_docs)):
 
 """
 트레이닝 파트
-clf  <- Naive baysian mdoel
-clf2 <- Logistic regresion model
+clf  <- Naive bayes model
+clf2 <- Logistic regression model
 """
-'''
-# Req 1-2-1. Naive baysian mdoel 학습
-clf = None
 
-# Req 1-2-2. Logistic regresion mdoel 학습
+# Req 1-2-1. Naive bayes model 학습
+clf = MultinomialNB()
+clf.fit(X, Y)
+
+# Req 1-2-2. Logistic regression model 학습
 clf2 = None
 
 
 """
 테스트 파트
 """
-
+'''
 # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
 print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1],None))
 print("Logistic regression exampleresult: {}, {}".format(test_data[3][1],None))
