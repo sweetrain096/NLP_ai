@@ -29,8 +29,8 @@ def tokenize(doc):
     okt = Okt()
     tokens = []
     for token in doc:
-        for pos in okt.pos(token):
-            tokens.append(pos[0] + '/' + pos[1])
+        for pos in okt.pos(token[0]):
+            tokens.append([pos[0] + '/' + pos[1], int(token[1])])
     return tokens
 
 """
@@ -44,8 +44,8 @@ test_data = read_data('ratings_test.txt')
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
-train_docs = tokenize(train_data[:, 1])
-test_docs = tokenize(test_data[:, 1])
+train_docs = tokenize(train_data[:, 1:])
+test_docs = tokenize(test_data[:, 1:])
 
 
 # Req 1-1-3. word_indices 초기화
@@ -54,8 +54,8 @@ word_indices = {}
 # Req 1-1-3. word_indices 채우기
 for n_data in train_docs + test_docs:
     # 품사까지 dict화
-    if not (word_indices.get(n_data)):
-        word_indices[n_data] = len(word_indices) + 1
+    if not (word_indices.get(n_data[0])):
+        word_indices[n_data[0]] = len(word_indices) + 1
 
     # 문자만 dict화
     # n_data = n_data.split('/')[0]
@@ -73,11 +73,18 @@ X_test = lil_matrix((len(test_docs), len(word_indices) + 1))
 # 평점 label 데이터가 저장될 Y 행렬 초기화
 # Y: train data label
 # Y_test: test data label
-Y = np.zeros((len(train_docs), len(word_indices)))
-Y_test = np.zeros(((len(test_docs), len(word_indices))))
+Y = np.zeros((len(train_docs)))
+Y_test = np.zeros(((len(test_docs))))
 
 # Req 1-1-5. one-hot 임베딩
 # X,Y 벡터값 채우기
+for n in range(len(train_docs)):
+    X[n, word_indices.get(train_docs[n][0])] = 1
+    Y[n] = train_docs[n][1]
+
+for n in range(len(test_docs)):
+    X_test[n, word_indices.get(test_docs[n][0])] = 1
+    Y_test = test_docs[n][1]
 
 
 """
