@@ -53,15 +53,15 @@ def tokenize(doc):
 # train_data = read_data('ratings_train.txt')
 # test_data = read_data('ratings_test.txt')
 
-train_data = read_data('ratings_train.txt')[:10]
+train_data = read_data('ratings_train.txt')[:3]
 test_data = read_data('ratings_test.txt')[:3]
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
 train_docs = [(tokenize(row[1]), row[2]) for row in train_data]
-print(train_docs)
+print('train_docs', train_docs)
 test_docs = [(tokenize(row[1]), row[2]) for row in test_data]
-print(test_docs)
+print('test_docs', test_docs)
 
 
 # Req 1-1-3. word_indices 초기화
@@ -75,34 +75,38 @@ for i in train_docs:
         if token[0] not in word_indices:
             word_indices[token[0]] = len(word_indices)+1
 print(word_indices)
-'''
+
 # Req 1-1-4. sparse matrix 초기화
 # X: train feature data
 # X_test: test feature data
-X = None
-X_test = None
+# lil_matrix dtype defalut = float
+X = lil_matrix((len(train_docs), len(word_indices)), dtype=int)
+X_test = lil_matrix((len(test_docs), len(word_indices)), dtype=int)
 
 
 # 평점 label 데이터가 저장될 Y 행렬 초기화
 # Y: train data label
 # Y_test: test data label
-Y = None
-Y_test = None
+Y = np.zeros(len(train_docs))
+Y_test = np.zeros(len(test_docs))
+# print(Y)
+# print(Y_test)
 
+'''
 # Req 1-1-5. one-hot 임베딩
 # X,Y 벡터값 채우기
 
 
 """
 트레이닝 파트
-clf  <- Naive baysian mdoel
-clf2 <- Logistic regresion model
+clf  <- Naive bayesian model
+clf2 <- Logistic regression model
 """
 
-# Req 1-2-1. Naive baysian mdoel 학습
+# Req 1-2-1. Naive bayesian model 학습
 clf = None
 
-# Req 1-2-2. Logistic regresion mdoel 학습
+# Req 1-2-2. Logistic regression model 학습
 clf2 = None
 
 
@@ -112,7 +116,7 @@ clf2 = None
 
 # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
 print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1],None))
-print("Logistic regression exampleresult: {}, {}".format(test_data[3][1],None))
+print("Logistic regression example result: {}, {}".format(test_data[3][1],None))
 
 # Req 1-3-2. 정확도 출력
 print("Naive bayesian classifier accuracy: {}".format(None))
