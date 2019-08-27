@@ -52,7 +52,7 @@ test_docs = tokenize(test_data[:, 1])
 word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
-for n_data in train_docs:
+for n_data in train_docs + test_docs:
     # 품사까지 dict화
     if not (word_indices.get(n_data)):
         word_indices[n_data] = len(word_indices) + 1
@@ -61,20 +61,20 @@ for n_data in train_docs:
     # n_data = n_data.split('/')[0]
     # if not (word_indices.get(n_data)):
     #     word_indices[n_data] = len(word_indices) + 1
-print(word_indices)
+# print(word_indices)
 
-# Req 1-1-4. sparse matrix 초기화
+# Req 1-1-4. sparse matrix(희소행렬 = 거의 0으로 채워지고 몇개의 값만 값이 존재) 초기화
 # X: train feature data
 # X_test: test feature data
-X = None
-X_test = None
+X = lil_matrix((len(train_docs), len(word_indices) + 1))
+X_test = lil_matrix((len(test_docs), len(word_indices) + 1))
 
 
 # 평점 label 데이터가 저장될 Y 행렬 초기화
 # Y: train data label
 # Y_test: test data label
-Y = None
-Y_test = None
+Y = np.zeros((len(train_docs), len(word_indices)))
+Y_test = np.zeros(((len(test_docs), len(word_indices))))
 
 # Req 1-1-5. one-hot 임베딩
 # X,Y 벡터값 채우기
