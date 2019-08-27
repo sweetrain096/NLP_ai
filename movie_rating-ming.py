@@ -31,35 +31,39 @@ def read_data(filename):
 # np.array는 초기 선언할 때 괄호 안에 빈 리스트라도 넣어줘야 함
 test_data = np.array([])
 train_data = np.array([])
-test_data = read_data('ratings_test.txt')
-train_data = read_data('ratings_train.txt')
-print(train_data)
-print(test_data)
+# test_data = read_data('ratings_test.txt')
+# train_data = read_data('ratings_train.txt')
+# print(train_data)
+# print(test_data)
 
-'''
+
 """
 Req 1-1-2. 토큰화 함수
 tokenize(): 텍스트 데이터를 받아 KoNLPy의 okt 형태소 분석기로 토크나이징
 """
-
+okt = Okt()
 def tokenize(doc):
-    return
+    return ['/'.join(t) for t in okt.pos(doc, norm=True, stem=True)]
 
 """
 데이터 전 처리
 """
 
 # train, test 데이터 읽기
-train_data = read_data('ratings_train.txt')
-test_data = read_data('ratings_test.txt')
+# train_data = read_data('ratings_train.txt')
+# test_data = read_data('ratings_test.txt')
 
+train_data = read_data('ratings_train.txt')[:3]
+test_data = read_data('ratings_test.txt')[:3]
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
-train_docs = None
-test_docs = None
+train_docs = [(tokenize(row[1]), row[2]) for row in train_data]
+print(train_docs)
+test_docs = [(tokenize(row[1]), row[2]) for row in test_data]
+print(test_docs)
 
-
+'''
 # Req 1-1-3. word_indices 초기화
 word_indices = {}
 
