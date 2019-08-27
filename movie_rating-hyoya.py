@@ -32,22 +32,32 @@ def tokenize(doc):
 
 # train, test 데이터 읽기
 # train_data = read_data('ratings_train.txt')
-test_data = read_data('ratings_test.txt')
-
+# test_data = read_data('ratings_test.txt')
+tt = read_data('test.txt')
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
 # train_docs = [(tokenize(row[1]), row[2]) for row in train_data]
-test_docs = [(tokenize(row[1]), row[2]) for row in test_data]
-from pprint import pprint
-pprint(test_docs[0])
+# test_docs = [(tokenize(row[1]), row[2]) for row in test_data]
+tt_docs = [(tokenize(row[1]), row[2]) for row in tt]
+# from pprint import pprint
+# pprint(tt_docs)
 
 
-# # Req 1-1-3. word_indices 초기화
-# word_indices = {}
-#
-# # Req 1-1-3. word_indices 채우기
-#
+# Req 1-1-3. word_indices 초기화
+word_indices = {}
+
+# Req 1-1-3. word_indices 채우기
+dic_idx = 0
+for item in tt_docs:
+    for data in item[0]:
+        data = data.split('/')
+        if data[0] not in word_indices:
+            word_indices[dic_idx] = data[0]
+            dic_idx += 1
+
+print(word_indices)
+
 # # Req 1-1-4. sparse matrix 초기화
 # # X: train feature data
 # # X_test: test feature data
