@@ -98,8 +98,8 @@ clf = MultinomialNB()
 clf.fit(X, Y)
 
 # Req 1-2-2. Logistic regression model 학습
-clf2 = None
-
+clf2 = LogisticRegression()
+clf2.fit(X, Y)
 
 """
 테스트 파트
