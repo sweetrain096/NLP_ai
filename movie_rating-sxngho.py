@@ -30,35 +30,45 @@ def tokenize(doc):
 """
 
 # train, test 데이터 읽기
-train_data = read_data('ratings_train.txt')
+#### train_data = read_data('ratings_train.txt')
 test_data = read_data('ratings_test.txt')
 
 #
 #
 # # Req 1-1-2. 문장 데이터 토큰화
 # # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
-# train_docs = [(tokenize(row[1]), row[2]) for row in train_data]
+#### train_docs = [(tokenize(row[1]), row[2]) for row in train_data]
 test_docs = [(tokenize(row[1]), row[2]) for row in test_data]
 
 #
 #
 # # Req 1-1-3. word_indices 초기화
-# word_indices = {}
+
+word_indices = {}
 #
 # # Req 1-1-3. word_indices 채우기
-#
+
+for lines in test_docs:
+    vocas = lines[0]
+    for voca in vocas:
+        word = voca.split('/')[0]
+        if word not in word_indices.keys():
+            word_indices[word]=len(word_indices)
+print(word_indices.keys())
+
+
 # # Req 1-1-4. sparse matrix 초기화
 # # X: train feature data
 # # X_test: test feature data
-# X = None
-# X_test = None
+X = None
+X_test = None
 #
 #
 # # 평점 label 데이터가 저장될 Y 행렬 초기화
 # # Y: train data label
 # # Y_test: test data label
-# Y = None
-# Y_test = None
+Y = None
+Y_test = None
 #
 # # Req 1-1-5. one-hot 임베딩
 # # X,Y 벡터값 채우기
