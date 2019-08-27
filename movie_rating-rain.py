@@ -52,6 +52,16 @@ test_docs = tokenize(test_data[:, 1])
 word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
+for n_data in train_docs:
+    # 품사까지 dict화
+    if not (word_indices.get(n_data)):
+        word_indices[n_data] = len(word_indices) + 1
+
+    # 문자만 dict화
+    # n_data = n_data.split('/')[0]
+    # if not (word_indices.get(n_data)):
+    #     word_indices[n_data] = len(word_indices) + 1
+print(word_indices)
 
 # Req 1-1-4. sparse matrix 초기화
 # X: train feature data
