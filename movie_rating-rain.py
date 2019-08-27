@@ -12,7 +12,13 @@ read_data(): 데이터를 읽어서 저장하는 함수
 """
 
 def read_data(filename):
-    return None
+    f = open(filename, "r", encoding="UTF8")
+    data = []
+    for line in f:
+        line = line[:-1]
+        data.append(line.split("\t"))
+
+    return np.array(data[1:])
 
 """
 Req 1-1-2. 토큰화 함수
@@ -64,7 +70,7 @@ Y_test = None
 clf  <- Naive baysian mdoel
 clf2 <- Logistic regresion model
 """
-
+'''
 # Req 1-2-1. Naive baysian mdoel 학습
 clf = None
 
@@ -375,3 +381,4 @@ model2 = None
 # Req 3-4-2. 정확도 측정
 print("Logistic_Regression_Classifier accuracy: {}".format(None))
 
+'''
