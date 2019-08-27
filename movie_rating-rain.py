@@ -29,7 +29,8 @@ def tokenize(doc):
     okt = Okt()
     tokens = []
     for token in doc:
-        tokens.append(okt.pos(token))
+        for pos in okt.pos(token):
+            tokens.append(pos[0] + '/' + pos[1])
     return tokens
 
 """
