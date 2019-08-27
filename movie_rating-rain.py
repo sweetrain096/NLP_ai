@@ -29,8 +29,10 @@ def tokenize(doc):
     okt = Okt()
     tokens = []
     for token in doc:
+        comment = []
         for pos in okt.pos(token[0]):
-            tokens.append([pos[0] + '/' + pos[1], int(token[1])])
+            comment.append(pos[0] + '/' + pos[1])
+        tokens.append([comment, int(token[1])])
     return tokens
 
 """
@@ -54,9 +56,9 @@ word_indices = {}
 # Req 1-1-3. word_indices 채우기
 for n_data in train_docs + test_docs:
     # 품사까지 dict화
-    if not (word_indices.get(n_data[0])):
-        word_indices[n_data[0]] = len(word_indices) + 1
-
+    for cnt in n_data[0]:
+        if not (word_indices.get(cnt)):
+            word_indices[cnt] = len(word_indices) + 1
     # 문자만 dict화
     # n_data = n_data.split('/')[0]
     # if not (word_indices.get(n_data)):
@@ -66,26 +68,27 @@ for n_data in train_docs + test_docs:
 # Req 1-1-4. sparse matrix(희소행렬 = 거의 0으로 채워지고 몇개의 값만 값이 존재) 초기화
 # X: train feature data
 # X_test: test feature data
-X = lil_matrix((len(train_docs), len(word_indices) + 1))
-X_test = lil_matrix((len(test_docs), len(word_indices) + 1))
+X = lil_matrix((len(train_data), len(word_indices) + 1))
+X_test = lil_matrix((len(test_data), len(word_indices) + 1))
 
 
 # 평점 label 데이터가 저장될 Y 행렬 초기화
 # Y: train data label
 # Y_test: test data label
-Y = np.zeros((len(train_docs)))
-Y_test = np.zeros(((len(test_docs))))
+Y = np.zeros((len(train_data)))
+Y_test = np.zeros(((len(test_data))))
 
 # Req 1-1-5. one-hot 임베딩
 # X,Y 벡터값 채우기
 for n in range(len(train_docs)):
-    X[n, word_indices.get(train_docs[n][0])] = 1
+    for token in train_docs[n][0]:
+        X[n, word_indices.get(token)] = 1
     Y[n] = train_docs[n][1]
 
 for n in range(len(test_docs)):
-    X_test[n, word_indices.get(test_docs[n][0])] = 1
-    Y_test = test_docs[n][1]
-
+    for token in test_docs[n][0]:
+        X_test[n, word_indices.get(token)] = 1
+    Y_test[n] = test_docs[n][1]
 
 """
 트레이닝 파트
@@ -104,22 +107,21 @@ clf2.fit(X, Y)
 """
 테스트 파트
 """
-'''
 # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
-print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1],None))
-print("Logistic regression exampleresult: {}, {}".format(test_data[3][1],None))
+print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1], clf.predict(X_test[3])))
+print("Logistic regression exampleresult: {}, {}".format(test_data[3][1], clf2.predict(X_test[3])))
 
 # Req 1-3-2. 정확도 출력
-print("Naive bayesian classifier accuracy: {}".format(None))
-print("Logistic regression accuracy: {}".format(None))
+print("Naive bayesian classifier accuracy: {}".format(clf.score(X_test, Y_test)))
+print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
 
 """
 데이터 저장 파트
 """
 
+'''
 # Req 1-4. pickle로 학습된 모델 데이터 저장
 
-    
 # Naive bayes classifier algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
 
