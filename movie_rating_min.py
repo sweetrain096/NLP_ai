@@ -49,21 +49,14 @@ for vocas in train_docs:
         if text not in word_indices:
             word_indices[text] = len(word_indices)
 
-print(word_indices)
-    # if voca not in word_indices.keys():
-    #     word_indices[voca]=len(word_indices)
-
-# print(word_indices)
-# train_tokens = [t for d in train_docs for t in d]
-
 # Req 1-1-4. sparse matrix 초기화
 # X: train feature data
 # X_test: test feature data
-X = None
-X_test = None
+X = lil_matrix(len(train_docs), len(word_indices))
+X_test = lil_matrix(len(test_docs), len(word_indices))
 
 # 평점 label 데이터가 저장될 Y 행렬 초기화
 # Y: train data label
 # Y_test: test data label
-Y = None
-Y_test = None
+Y = np.zeros(len(train_docs))
+Y_test = np.zeros(len(test_docs))
