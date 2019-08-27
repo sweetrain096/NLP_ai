@@ -128,6 +128,9 @@ print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
 with open("Naive.clf", "wb") as f:
     pickle.dump(clf, f)
 
+with open("Logistic.clf", "wb") as f:
+    pickle.dump(clf2, f)
+
 #
 # # Naive bayes classifier algorithm part
 # # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
