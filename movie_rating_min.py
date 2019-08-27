@@ -110,3 +110,16 @@ print("Logistic regression exampleresult: {}, {}".format(test_data[3][1], clf2.p
 # Req 1-3-2. 정확도 출력
 print("Naive bayesian classifier accuracy: {}".format(clf.score(X_test, Y_test)))
 print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
+
+"""
+데이터 저장 파트
+"""
+​
+# Req 1-4. pickle로 학습된 모델 데이터 저장
+​
+with open('model1.clf', 'wb') as f:
+   pickle.dump(clf, f)
+​
+​
+with open('model2.clf', 'wb') as f:
+   pickle.dump(clf2, f)
