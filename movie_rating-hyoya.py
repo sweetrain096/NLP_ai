@@ -31,15 +31,15 @@ def tokenize(doc):
 """
 
 # train, test 데이터 읽기
-# train_data = read_data('ratings_train.txt')
-# test_data = read_data('ratings_test.txt')
-tt = read_data('test.txt')
+# train_data = read_data('ratings_train.txt') #원본
+# test_data = read_data('ratings_test.txt') #원본
+train_data = read_data('test.txt') #작은 데이터
+test_data = read_data('test2.txt') #작은 데이터
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
-# train_docs = [(tokenize(row[1]), row[2]) for row in train_data]
-# test_docs = [(tokenize(row[1]), row[2]) for row in test_data]
-tt_docs = [(tokenize(row[1]), row[2]) for row in tt]
+train_docs = [(tokenize(row[1]), row[2]) for row in train_data]
+test_docs = [(tokenize(row[1]), row[2]) for row in test_data]
 # from pprint import pprint
 # pprint(tt_docs)
 
@@ -49,42 +49,40 @@ word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
 dic_idx = 0
-for item in tt_docs:
+for item in train_docs:
     for data in item[0]:
         data = data.split('/')
         if data[0] not in word_indices:
-            word_indices[dic_idx] = data[0]
+            word_indices[data[0]] = dic_idx
             dic_idx += 1
 
-print(word_indices)
 
-# # Req 1-1-4. sparse matrix 초기화
-# # X: train feature data
-# # X_test: test feature data
-# X = None
-# X_test = None
-#
-#
-# # 평점 label 데이터가 저장될 Y 행렬 초기화
-# # Y: train data label
-# # Y_test: test data label
-# Y = None
-# Y_test = None
-#
-# # Req 1-1-5. one-hot 임베딩
-# # X,Y 벡터값 채우기
-#
-#
+# Req 1-1-4. sparse matrix 초기화
+# X: train feature data
+# X_test: test feature data
+X = lil_matrix((len(train_data), len(word_indices)), dtype=int)
+X_test = ((len(test_data), len(word_indices)), dtype=int)
+
+# 평점 label 데이터가 저장될 Y 행렬 초기화
+# Y: train data label
+# Y_test: test data label
+Y = np.zeros(len(train_data), dtype=int)
+Y_test = np.zeros(len(test_data), dtype=int)
+
+# Req 1-1-5. one-hot 임베딩
+# X,Y 벡터값 채우기
+
+
 # """
 # 트레이닝 파트
-# clf  <- Naive baysian mdoel
-# clf2 <- Logistic regresion model
+# clf  <- Naive bayesian model
+# clf2 <- Logistic regression model
 # """
 #
-# # Req 1-2-1. Naive baysian mdoel 학습
+# # Req 1-2-1. Naive bayesian model 학습
 # clf = None
 #
-# # Req 1-2-2. Logistic regresion mdoel 학습
+# # Req 1-2-2. Logistic regression model 학습
 # clf2 = None
 #
 #
@@ -94,7 +92,7 @@ print(word_indices)
 #
 # # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
 # print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1],None))
-# print("Logistic regression exampleresult: {}, {}".format(test_data[3][1],None))
+# print("Logistic regression example result: {}, {}".format(test_data[3][1],None))
 #
 # # Req 1-3-2. 정확도 출력
 # print("Naive bayesian classifier accuracy: {}".format(None))
@@ -124,7 +122,7 @@ print(word_indices)
 #     """
 #
 #     def log_likelihoods_naivebayes(self, feature_vector, Class):
-#         log_likelihood = 0.0
+#         log_likelihood = 0.0term_frequency
 #
 #         if Class == 0:
 #             for feature_index in range(len(feature_vector)):
