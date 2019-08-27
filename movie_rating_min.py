@@ -84,3 +84,13 @@ for (idx1, vocas) in enumerate(train_docs):
 
 for (idx1, vocas) in enumerate(test_docs):
      Y_test[idx1] = vocas[1]
+
+"""
+트레이닝 파트
+clf  <- Naive bayesian model
+clf2 <- Logistic regression model
+"""
+​
+# Req 1-2-1. Naive bayesian model 학습
+clf = MultinomialNB()
+clf.fit(X, Y)
