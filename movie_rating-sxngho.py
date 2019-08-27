@@ -72,8 +72,23 @@ Y_test = np.zeros((len(test_data),))
 
 # # Req 1-1-5. one-hot 임베딩
 # # X,Y 벡터값 채우기
-#
-#
+def one_hot_encoding(w, word2index):
+    one_hot_vector = [0] * (len(word2index))
+    index = word2index.get(w)
+    if index is not None:
+        one_hot_vector[index] = 1
+
+    return one_hot_vector
+
+
+for (idx,lines) in enumerate(train_docs):
+    vocas = lines[0]
+    Y[idx] =lines[1]
+    for voca in vocas:
+        word = voca.split('/')[0]
+        label = lines[1]
+        X[idx] = one_hot_encoding(word, word_indices)
+
 # """
 # 트레이닝 파트
 # clf  <- Naive baysian mdoel
