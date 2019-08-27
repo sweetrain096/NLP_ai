@@ -112,8 +112,9 @@ clf2.fit(X, Y)
 # """
 #
 # # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
-# print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1],None))
-# print("Logistic regression exampleresult: {}, {}".format(test_data[3][1],None))
+print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1], clf.predict(X_test[3])))
+print("Logistic regression example result: {}, {}".format(test_data[3][1], clf2.predict(X_test[3])))
+
 #
 # # Req 1-3-2. 정확도 출력
 # print("Naive bayesian classifier accuracy: {}".format(None))
