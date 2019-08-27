@@ -26,7 +26,11 @@ tokenize(): 텍스트 데이터를 받아 KoNLPy의 okt 형태소 분석기로 �
 """
 
 def tokenize(doc):
-    return
+    okt = Okt()
+    tokens = []
+    for token in doc:
+        tokens.append(okt.pos(token))
+    return tokens
 
 """
 데이터 전 처리
@@ -39,8 +43,8 @@ test_data = read_data('ratings_test.txt')
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
-train_docs = None
-test_docs = None
+train_docs = tokenize(train_data[:, 1])
+test_docs = tokenize(test_data[:, 1])
 
 
 # Req 1-1-3. word_indices 초기화
