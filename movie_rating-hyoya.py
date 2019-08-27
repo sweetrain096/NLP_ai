@@ -61,7 +61,7 @@ for item in train_docs:
 # X: train feature data
 # X_test: test feature data
 X = lil_matrix((len(train_data), len(word_indices)), dtype=int)
-X_test = ((len(test_data), len(word_indices)), dtype=int)
+X_test = lil_matrix((len(test_data), len(word_indices)), dtype=int)
 
 # 평점 label 데이터가 저장될 Y 행렬 초기화
 # Y: train data label
@@ -71,7 +71,24 @@ Y_test = np.zeros(len(test_data), dtype=int)
 
 # Req 1-1-5. one-hot 임베딩
 # X,Y 벡터값 채우기
+def one_hot_encoding(vocas, word_indices):
+    one_hot_vector = [0]*(len(word_indices))
+    for (idx, voca) in enumerate(vocas[0]):
+        text = voca.split('/')[0]
+        index=word_indices.get(text)
+        if index is not None:
+            one_hot_vector[index]=1
+    return one_hot_vector
 
+for (idx1, vocas) in enumerate(train_docs):
+    X[idx1] = one_hot_encoding(vocas, word_indices)
+for (idx1, vocas) in enumerate(test_docs):
+    X_test[idx1] = one_hot_encoding(vocas, word_indices)
+
+for (idx1, vocas) in enumerate(train_docs):
+     Y[idx1] = vocas[1]
+for (idx1, vocas) in enumerate(test_docs):
+     Y_test[idx1] = vocas[1]
 
 # """
 # 트레이닝 파트
