@@ -53,7 +53,7 @@ def tokenize(doc):
 # train_data = read_data('ratings_train.txt')
 # test_data = read_data('ratings_test.txt')
 
-train_data = read_data('ratings_train.txt')[:3]
+train_data = read_data('ratings_train.txt')[:10]
 test_data = read_data('ratings_test.txt')[:3]
 
 # Req 1-1-2. 문장 데이터 토큰화
@@ -63,12 +63,19 @@ print(train_docs)
 test_docs = [(tokenize(row[1]), row[2]) for row in test_data]
 print(test_docs)
 
-'''
+
 # Req 1-1-3. word_indices 초기화
 word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
-
+for i in train_docs:
+    for data in i[0]:
+        # print('data', data)
+        token = data.split('/')
+        if token[0] not in word_indices:
+            word_indices[token[0]] = len(word_indices)+1
+print(word_indices)
+'''
 # Req 1-1-4. sparse matrix 초기화
 # X: train feature data
 # X_test: test feature data
