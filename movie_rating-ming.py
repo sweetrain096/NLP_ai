@@ -147,13 +147,14 @@ clf2.fit(X, Y)
 
 # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
 # 임의로 3(인덱스)번째 문장을 가져와서 예측
-print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1], clf.predict(X[3])[0]))
-print("Logistic regression example result: {}, {}".format(test_data[3][1], clf2.predict(X[3])[0]))
-'''
-# Req 1-3-2. 정확도 출력
-print("Naive bayesian classifier accuracy: {}".format(None))
-print("Logistic regression accuracy: {}".format(None))
+print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1], clf.predict(X_test[3])[0]))
+print("Logistic regression example result: {}, {}".format(test_data[3][1], clf2.predict(X_test[3])[0]))
 
+# Req 1-3-2. 정확도 출력
+print("Naive bayesian classifier accuracy: {}".format(clf.score(X_test, Y_test)))
+print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
+
+'''
 """
 데이터 저장 파트
 """
