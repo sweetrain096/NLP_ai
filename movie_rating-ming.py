@@ -53,8 +53,8 @@ def tokenize(doc):
 # train_data = read_data('ratings_train.txt')
 # test_data = read_data('ratings_test.txt')
 
-train_data = read_data('ratings_train.txt')[:5]
-test_data = read_data('ratings_test.txt')[:5]
+train_data = read_data('ratings_train.txt')
+test_data = read_data('ratings_test.txt')
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
@@ -154,15 +154,19 @@ print("Logistic regression example result: {}, {}".format(test_data[3][1], clf2.
 print("Naive bayesian classifier accuracy: {}".format(clf.score(X_test, Y_test)))
 print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
 
-'''
+
 """
 데이터 저장 파트
 """
 
 # Req 1-4. pickle로 학습된 모델 데이터 저장
+with open("model_naive.clf", "wb") as f1:
+    pickle.dump(clf, f1)
 
+with open("model_log.clf", "wb") as f2:
+    pickle.dump(clf2, f2)
     
-
+'''
 # Naive bayes classifier algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
 
