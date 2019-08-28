@@ -53,8 +53,8 @@ def tokenize(doc):
 # train_data = read_data('ratings_train.txt')
 # test_data = read_data('ratings_test.txt')
 
-train_data = read_data('ratings_train.txt')[:3]
-test_data = read_data('ratings_test.txt')[:3]
+train_data = read_data('ratings_train.txt')[:5]
+test_data = read_data('ratings_test.txt')[:5]
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
@@ -140,15 +140,16 @@ clf2 = LogisticRegression()
 clf2.fit(X, Y)
 # print(clf2)
 
-'''
+
 """
 테스트 파트
 """
 
 # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
-print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1],None))
-print("Logistic regression example result: {}, {}".format(test_data[3][1],None))
-
+# 임의로 3(인덱스)번째 문장을 가져와서 예측
+print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1], clf.predict(X[3])[0]))
+print("Logistic regression example result: {}, {}".format(test_data[3][1], clf2.predict(X[3])[0]))
+'''
 # Req 1-3-2. 정확도 출력
 print("Naive bayesian classifier accuracy: {}".format(None))
 print("Logistic regression accuracy: {}".format(None))
