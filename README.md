@@ -16,7 +16,7 @@
 
    * ratings_train.txt, ratings_test.txt 파일을 읽고 트레이닝 데이터와 테스트 데이터로 저장합니다.
    * ratings_train.txt파일은 영화 댓글과 그에 따른 label 값인 0 또는 1이 저장되어 있습니다.
-   * 첫 번째 열을 제외한 document, laber 열을 읽습니다.
+   * 첫 번째 열을 제외한 document, label 열을 읽습니다.
 
 2. 문장 데이터 자연어 처리하기
 
