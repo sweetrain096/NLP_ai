@@ -31,10 +31,10 @@ def tokenize(doc):
 """
 
 # train, test 데이터 읽기
-# train_data = read_data('ratings_train.txt') #원본
-# test_data = read_data('ratings_test.txt') #원본
-train_data = read_data('test.txt') #작은 데이터
-test_data = read_data('test2.txt') #작은 데이터
+train_data = read_data('ratings_train.txt') #원본
+test_data = read_data('ratings_test.txt') #원본
+# train_data = read_data('test.txt') #작은 데이터
+# test_data = read_data('test2.txt') #작은 데이터
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
@@ -99,7 +99,7 @@ clf2 <- Logistic regression model
 # Req 1-2-1. Naive bayesian model 학습
 clf = MultinomialNB()
 clf.fit(X, Y)
-​
+
 # Req 1-2-2. Logistic regression model 학습
 clf2 = LogisticRegression()
 clf2.fit(X, Y)
@@ -117,13 +117,29 @@ print("Naive bayesian classifier accuracy: {}".format(clf.score(X_test, Y_test))
 print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
 
 
-# """
-# 데이터 저장 파트
-# """
-#
-# # Req 1-4. pickle로 학습된 모델 데이터 저장
-#
-#
+"""
+데이터 저장 파트
+"""
+class Model:
+    def __init__(self):
+        self.world_indices = {}
+        self.clf = None
+        self.clf2 = None
+
+    def initModel(self, wi, cl, cl2):
+        self.world_indices = wi
+        self.clf = cl
+        self.clf2 = cl2
+
+model = Model()
+model.initModel(word_indices, clf, clf2)
+
+# Req 1-4. pickle로 학습된 모델 데이터 저장
+with open("model.clf", "wb") as f:
+    pickle.dump(model, f)
+
+
+
 # # Naive bayes classifier algorithm part
 # # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
 #
@@ -135,7 +151,7 @@ print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
 #
 #     """
 #     Req 3-1-1.
-#     log_likelihoods_naivebayes():
+#     log_likelihoods_naivebayes():w
 #     feature 데이터를 받아 label(class)값에 해당되는 likelihood 값들을
 #     naive한 방식으로 구하고 그 값의 log값을 리턴
 #     """
