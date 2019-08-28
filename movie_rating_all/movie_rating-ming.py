@@ -1,6 +1,5 @@
 import numpy as np
 import pickle
-from model import Model
 
 from konlpy.tag import Okt
 from scipy.sparse import lil_matrix
@@ -13,94 +12,133 @@ read_data(): 데이터를 읽어서 저장하는 함수
 """
 
 def read_data(filename):
-    with open(filename, 'r', encoding='utf-8') as f:
-        datas = [line.split('\t') for line in f.read().splitlines()]
-        datas = datas[1:]
-    return datas
+    global test_data, train_data
+    result = []
+    data = open(filename, 'r', encoding='utf-8')
+    while True:
+        line = data.readline()
+        if not line: break
+        line = line.split('\t')
+        line[-1] = line[-1][:1]
+        # line = ['id', '내용', '0/1\n']
+        # print(line)
+        # result.append(line.split('\t'))
+        result.append(line)
+    result = np.array(result[1:])
+    # print(result)
+    return result
+
+# np.array는 초기 선언할 때 괄호 안에 빈 리스트라도 넣어줘야 함
+test_data = np.array([])
+train_data = np.array([])
+# test_data = read_data('ratings_test.txt')
+# train_data = read_data('ratings_train.txt')
+# print(train_data)
+# print(test_data)
+
 
 """
 Req 1-1-2. 토큰화 함수
 tokenize(): 텍스트 데이터를 받아 KoNLPy의 okt 형태소 분석기로 토크나이징
 """
 okt = Okt()
-
 def tokenize(doc):
-    tt = okt.pos(doc, norm=True, stem=True)
-    return ['/'.join(t) for t in tt]
+    return ['/'.join(t) for t in okt.pos(doc, norm=True, stem=True)]
 
 """
 데이터 전 처리
 """
 
 # train, test 데이터 읽기
+# train_data = read_data('ratings_train.txt')
+# test_data = read_data('ratings_test.txt')
+
 train_data = read_data('ratings_train.txt')
 test_data = read_data('ratings_test.txt')
 
-
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
+train_docs = [(tokenize(row[1]), row[2]) for row in train_data]
+print('train_docs', train_docs)
+test_docs = [(tokenize(row[1]), row[2]) for row in test_data]
+print('test_docs', test_docs)
 
-
-train_docs = [(tokenize(i[1]), i[2]) for i in train_data]
-test_docs = [(tokenize(i[1]), i[2]) for i in test_data]
 
 # Req 1-1-3. word_indices 초기화
 word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
-for n_data in train_docs:
-    # 품사까지 dict화
-    for cnt in n_data[0]:
-        if not (word_indices.get(cnt)):
-            word_indices[cnt] = len(word_indices) + 1
-    # 문자만 dict화
-    # n_data = n_data.split('/')[0]
-    # if not (word_indices.get(n_data)):
-    #     word_indices[n_data] = len(word_indices) + 1
-# print(word_indices)
+for i in train_docs + test_docs:
+    for data in i[0]:
+        # print('data', data)
+        token = data.split('/')
+        # print('token', token)
+        if token[0] not in word_indices:
+            word_indices[token[0]] = len(word_indices)+1
+print(word_indices)
 
-# Req 1-1-4. sparse matrix(희소행렬 = 거의 0으로 채워지고 몇개의 값만 값이 존재) 초기화
+# Req 1-1-4. sparse matrix 초기화
 # X: train feature data
 # X_test: test feature data
-X = lil_matrix((len(train_data), len(word_indices) + 1))
-X_test = lil_matrix((len(test_data), len(word_indices) + 1))
+# lil_matrix dtype defalut = float
+X = lil_matrix((len(train_docs), len(word_indices)+1), dtype=int)
+X_test = lil_matrix((len(test_docs), len(word_indices)+1), dtype=int)
 
 
 # 평점 label 데이터가 저장될 Y 행렬 초기화
 # Y: train data label
 # Y_test: test data label
-Y = np.zeros((len(train_data)))
-Y_test = np.zeros(((len(test_data))))
+Y = np.zeros(len(train_docs))
+Y_test = np.zeros(len(test_docs))
+# print(Y)
+# print(Y_test)
+
 
 # Req 1-1-5. one-hot 임베딩
+# 학습에 사용된 모든 token의 종류들 중에 트레이닝 문장에서 사용되는 token에 1을 붙이고 나머지를 0으로 채우는 방식
+# 각 문장별로 token 틀에 해당되는 index 값이 0, 1을 갖게 되는 트레이닝 데이터를 얻을 수 있음
 # X,Y 벡터값 채우기
-for n in range(len(train_docs)):
-    for token in train_docs[n][0]:
-        indices = word_indices.get(token)
-        if indices:
-            X[n, indices] = 1
-    Y[n] = train_docs[n][1]
+for i in range(len(train_docs)):
+    for token in train_docs[i][0]:
+    #     print(token)
+    # print(1)
+        print(token.split('/')[0])
+        word = word_indices.get(token.split('/')[0])
+        print(word)
+        if word:
+            X[i, word] = 1
+    Y[i] = train_docs[i][1]
+# print(X)
+# print(Y)
+for j in range(len(test_docs)):
+    for token in test_docs[j][0]:
+        # print(word_indices.get(token.split('/')[0]))
+        word = word_indices.get(token.split('/')[0])
+        if word:
+            X_test[j, word] = 1
+    Y_test[j] = test_docs[j][1]
+print(X_test)
+print(Y_test)
 
-for n in range(len(test_docs)):
-    for token in test_docs[n][0]:
-        indices = word_indices.get(token)
-        if indices:
-            X_test[n, indices] = 1
-    Y_test[n] = test_docs[n][1]
+
 
 """
 트레이닝 파트
-clf  <- Naive baysian mdoel
-clf2 <- Logistic regresion model
+clf  <- Naive bayesian model
+clf2 <- Logistic regression model
 """
 
-# Req 1-2-1. Naive bayes model 학습
+
+# Req 1-2-1. Naive bayesian model 학습
+# MultinomialNB
 clf = MultinomialNB()
 clf.fit(X, Y)
+# print(clf)
 
 # Req 1-2-2. Logistic regression model 학습
 clf2 = LogisticRegression()
 clf2.fit(X, Y)
+# print(clf2)
 
 
 """
@@ -108,31 +146,30 @@ clf2.fit(X, Y)
 """
 
 # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
-print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1], clf.predict(X_test[3])))
-print("Logistic regression exampleresult: {}, {}".format(test_data[3][1], clf2.predict(X_test[3])))
+# 임의로 3(인덱스)번째 문장을 가져와서 예측
+print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1], clf.predict(X_test[3])[0]))
+print("Logistic regression example result: {}, {}".format(test_data[3][1], clf2.predict(X_test[3])[0]))
 
 # Req 1-3-2. 정확도 출력
 print("Naive bayesian classifier accuracy: {}".format(clf.score(X_test, Y_test)))
 print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
+
 
 """
 데이터 저장 파트
 """
 
 # Req 1-4. pickle로 학습된 모델 데이터 저장
+with open("model_naive.clf", "wb") as f1:
+    pickle.dump(clf, f1)
 
-model = Model()
-
-model.set_naive_model(clf)
-model.set_logistic_model(clf2)
-model.set_word_indices(word_indices)
-
-with open('model.clf', 'wb') as f:
-   pickle.dump(model, f)
+with open("model_log.clf", "wb") as f2:
+    pickle.dump(clf2, f2)
     
+'''
 # Naive bayes classifier algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
-'''
+
 """
 Naive_Bayes_Classifier 알고리즘 클래스입니다.
 """
