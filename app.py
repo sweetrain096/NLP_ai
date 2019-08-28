@@ -1,6 +1,7 @@
 import pickle
 from threading import Thread
 import sqlite3
+from model import Model
 
 import numpy as np
 from konlpy.tag import Okt
