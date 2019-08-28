@@ -68,10 +68,11 @@ print('test_docs', test_docs)
 word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
-for i in train_docs:
+for i in train_docs + test_docs:
     for data in i[0]:
         # print('data', data)
         token = data.split('/')
+        # print('token', token)
         if token[0] not in word_indices:
             word_indices[token[0]] = len(word_indices)+1
 print(word_indices)
@@ -80,8 +81,8 @@ print(word_indices)
 # X: train feature data
 # X_test: test feature data
 # lil_matrix dtype defalut = float
-X = lil_matrix((len(train_docs), len(word_indices)), dtype=int)
-X_test = lil_matrix((len(test_docs), len(word_indices)), dtype=int)
+X = lil_matrix((len(train_docs), len(word_indices)+1), dtype=int)
+X_test = lil_matrix((len(test_docs), len(word_indices)+1), dtype=int)
 
 
 # 평점 label 데이터가 저장될 Y 행렬 초기화
@@ -92,9 +93,33 @@ Y_test = np.zeros(len(test_docs))
 # print(Y)
 # print(Y_test)
 
-'''
+
 # Req 1-1-5. one-hot 임베딩
+# 학습에 사용된 모든 token의 종류들 중에 트레이닝 문장에서 사용되는 token에 1을 붙이고 나머지를 0으로 채우는 방식
+# 각 문장별로 token 틀에 해당되는 index 값이 0, 1을 갖게 되는 트레이닝 데이터를 얻을 수 있음
 # X,Y 벡터값 채우기
+for i in range(len(train_docs)):
+    for token in train_docs[i][0]:
+    #     print(token)
+    # print(1)
+        print(token.split('/')[0])
+        word = word_indices.get(token.split('/')[0])
+        print(word)
+        if word:
+            X[i, word] = 1
+    Y[i] = train_docs[i][1]
+# print(X)
+# print(Y)
+for j in range(len(test_docs)):
+    for token in test_docs[j][0]:
+        # print(word_indices.get(token.split('/')[0]))
+        word = word_indices.get(token.split('/')[0])
+        if word:
+            X_test[j, word] = 1
+    Y_test[j] = test_docs[j][1]
+print(X_test)
+print(Y_test)
+
 
 
 """
@@ -103,6 +128,7 @@ clf  <- Naive bayesian model
 clf2 <- Logistic regression model
 """
 
+'''
 # Req 1-2-1. Naive bayesian model 학습
 clf = None
 
