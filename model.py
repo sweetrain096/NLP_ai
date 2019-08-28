@@ -1,19 +1,24 @@
 class Model:
 
-    def add_naiveModel(self, naiveModel):
-        self.naiveModel = naiveModel
+    def __init__(self):
+        self.naive_model = "No Model"
+        self.logistic_model = "No Model"
+        self.word_indices = "No Words"
 
-    def add_logisticModel(self, logisticModel):
-        self.logisticModel = logisticModel
+    def set_naive_model(self, naive_model):
+        self.naive_model = naive_model
 
-    def add_word_indices(self, word_indices):
+    def set_logistic_model(self, logistic_model):
+        self.logistic_model = logistic_model
+
+    def set_word_indices(self, word_indices):
         self.word_indices = word_indices
 
-    def get_naiveModel(self):
-        return self.naiveModel
+    def get_naive_model(self):
+        return self.naive_model
 
-    def get_logisticModel(self):
-        return self.logisticModel
+    def get_logistic_model(self):
+        return self.logistic_model
 
     def get_word_indices(self):
         return self.word_indices

@@ -1,5 +1,6 @@
 import numpy as np
 import pickle
+from model import Model
 
 from konlpy.tag import Okt
 from scipy.sparse import lil_matrix
@@ -12,15 +13,20 @@ read_data(): 데이터를 읽어서 저장하는 함수
 """
 
 def read_data(filename):
-    return None
+    with open(filename, 'r', encoding='utf-8') as f:
+        datas = [line.split('\t') for line in f.read().splitlines()]
+        datas = datas[1:]
+    return datas
 
 """
 Req 1-1-2. 토큰화 함수
 tokenize(): 텍스트 데이터를 받아 KoNLPy의 okt 형태소 분석기로 토크나이징
 """
+okt = Okt()
 
 def tokenize(doc):
-    return
+    tt = okt.pos(doc, norm=True, stem=True)
+    return ['/'.join(t) for t in tt]
 
 """
 데이터 전 처리
@@ -33,31 +39,54 @@ test_data = read_data('ratings_test.txt')
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
-train_docs = None
-test_docs = None
 
+
+train_docs = [(tokenize(i[1]), i[2]) for i in train_data]
+test_docs = [(tokenize(i[1]), i[2]) for i in test_data]
 
 # Req 1-1-3. word_indices 초기화
 word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
+for n_data in train_docs:
+    # 품사까지 dict화
+    for cnt in n_data[0]:
+        if not (word_indices.get(cnt)):
+            word_indices[cnt] = len(word_indices) + 1
+    # 문자만 dict화
+    # n_data = n_data.split('/')[0]
+    # if not (word_indices.get(n_data)):
+    #     word_indices[n_data] = len(word_indices) + 1
+# print(word_indices)
 
-# Req 1-1-4. sparse matrix 초기화
+# Req 1-1-4. sparse matrix(희소행렬 = 거의 0으로 채워지고 몇개의 값만 값이 존재) 초기화
 # X: train feature data
 # X_test: test feature data
-X = None
-X_test = None
+X = lil_matrix((len(train_data), len(word_indices) + 1))
+X_test = lil_matrix((len(test_data), len(word_indices) + 1))
 
 
 # 평점 label 데이터가 저장될 Y 행렬 초기화
 # Y: train data label
 # Y_test: test data label
-Y = None
-Y_test = None
+Y = np.zeros((len(train_data)))
+Y_test = np.zeros(((len(test_data))))
 
 # Req 1-1-5. one-hot 임베딩
 # X,Y 벡터값 채우기
+for n in range(len(train_docs)):
+    for token in train_docs[n][0]:
+        indices = word_indices.get(token)
+        if indices:
+            X[n, indices] = 1
+    Y[n] = train_docs[n][1]
 
+for n in range(len(test_docs)):
+    for token in test_docs[n][0]:
+        indices = word_indices.get(token)
+        if indices:
+            X_test[n, indices] = 1
+    Y_test[n] = test_docs[n][1]
 
 """
 트레이닝 파트
@@ -65,11 +94,13 @@ clf  <- Naive baysian mdoel
 clf2 <- Logistic regresion model
 """
 
-# Req 1-2-1. Naive baysian mdoel 학습
-clf = None
+# Req 1-2-1. Naive bayes model 학습
+clf = MultinomialNB()
+clf.fit(X, Y)
 
-# Req 1-2-2. Logistic regresion mdoel 학습
-clf2 = None
+# Req 1-2-2. Logistic regression model 학습
+clf2 = LogisticRegression()
+clf2.fit(X, Y)
 
 
 """
@@ -77,12 +108,12 @@ clf2 = None
 """
 
 # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
-print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1],None))
-print("Logistic regression exampleresult: {}, {}".format(test_data[3][1],None))
+print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1], clf.predict(X_test[3])))
+print("Logistic regression exampleresult: {}, {}".format(test_data[3][1], clf2.predict(X_test[3])))
 
 # Req 1-3-2. 정확도 출력
-print("Naive bayesian classifier accuracy: {}".format(None))
-print("Logistic regression accuracy: {}".format(None))
+print("Naive bayesian classifier accuracy: {}".format(clf.score(X_test, Y_test)))
+print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
 
 """
 데이터 저장 파트
@@ -90,10 +121,18 @@ print("Logistic regression accuracy: {}".format(None))
 
 # Req 1-4. pickle로 학습된 모델 데이터 저장
 
+model = Model()
+
+model.set_naive_model(clf)
+model.set_logistic_model(clf2)
+model.set_word_indices(word_indices)
+
+with open('model.clf', 'wb') as f:
+   pickle.dump(model, f)
     
 # Naive bayes classifier algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
-
+'''
 """
 Naive_Bayes_Classifier 알고리즘 클래스입니다.
 """
@@ -375,3 +414,4 @@ model2 = None
 # Req 3-4-2. 정확도 측정
 print("Logistic_Regression_Classifier accuracy: {}".format(None))
 
+'''
