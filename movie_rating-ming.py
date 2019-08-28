@@ -128,14 +128,19 @@ clf  <- Naive bayesian model
 clf2 <- Logistic regression model
 """
 
-'''
+
 # Req 1-2-1. Naive bayesian model 학습
-clf = None
+# MultinomialNB
+clf = MultinomialNB()
+clf.fit(X, Y)
+# print(clf)
 
 # Req 1-2-2. Logistic regression model 학습
-clf2 = None
+clf2 = LogisticRegression()
+clf2.fit(X, Y)
+# print(clf2)
 
-
+'''
 """
 테스트 파트
 """
