@@ -1,5 +1,6 @@
 import numpy as np
 import pickle
+from model import Model
 
 from konlpy.tag import Okt
 from scipy.sparse import lil_matrix
@@ -133,35 +134,13 @@ print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
 
 # Req 1-4. pickle로 학습된 모델 데이터 저장
 
-
-class Model:
-
-    def add_naivemodel(self, naiveModel):
-        self.naveModel = naiveModel
-
-    def add_logisticModel(self, logisticModel):
-        self.logisticModel = logisticModel
-
-    def add_word_indices(self, word_indices):
-        self.word_indices = word_indices
-
-    def get_naiveModel(self):
-        return self.naiveModel
-
-    def get_logisticModel(self):
-        return self.logisticModel
-
-    def get_word_indices(self):
-        return self.word_indices
-
-
 model = Model()
 
-model.add_naivemodel(clf)
+model.add_naiveModel(clf)
 model.add_logisticModel(clf2)
 model.add_word_indices(word_indices)
 
-with open('model.clf', 'wb') as f:
+with open('model_joo.clf', 'wb') as f:
    pickle.dump(model, f)
 
 # # Naive bayes classifier algorithm part
