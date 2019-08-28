@@ -82,12 +82,16 @@ Y_test = np.zeros(((len(test_data))))
 # X,Y 벡터값 채우기
 for n in range(len(train_docs)):
     for token in train_docs[n][0]:
-        X[n, word_indices.get(token)] = 1
+        indices = word_indices.get(token)
+        if not indices:
+            X[n, indices] = 1
     Y[n] = train_docs[n][1]
 
 for n in range(len(test_docs)):
     for token in test_docs[n][0]:
-        X_test[n, word_indices.get(token)] = 1
+        indices = word_indices.get(token)
+        if not indices:
+            X_test[n, indices] = 1
     Y_test[n] = test_docs[n][1]
 
 """
