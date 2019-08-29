@@ -30,9 +30,25 @@ clf2 = pickle_obj.get_logistic_model()
 
 
 # Req 2-2-2. 토큰화 및 one-hot 임베딩하는 전 처리
-def preprocess():
+def preprocess(slack_str):
+    X_test = lil_matrix((1, len(word_indices) + 1), dtype=int)
+    test_str = ' '.join(slack_str.split()[1:])
+    print(test_str)
+    okt = Okt()
+    tokenize = okt.pos(test_str, norm=True, stem=True)
+    test_tokens = ['/'.join(t) for t in tokenize]
+    none_cnt = 0
+    for token in test_tokens:
+        indices = word_indices.get(token)
+        if indices:
+            X_test[0, indices] = 1
+        else:
+            none_cnt += 1
 
-    return None
+    if none_cnt / len(test_tokens) > 0.5:
+        return 0
+
+    return X_test[0]
 
 # Req 2-2-3. 긍정 혹은 부정으로 분류
 def classify():
