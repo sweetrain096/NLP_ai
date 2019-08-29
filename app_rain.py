@@ -51,12 +51,24 @@ def preprocess(slack_str):
     return X_test[0]
 
 # Req 2-2-3. 긍정 혹은 부정으로 분류
-def classify():
-
-    return None
+def classify(X_test):
+    if X_test == 0:
+        return "잘 모르겠는데요..."
+    result1 = clf.predict(X_test)
+    result2 = clf2.predict(X_test)
+    print(result1, result2)
+    if result1 == result2 and result1 == 1:
+        return "긍정"
+    if result1 == result2 and result1 == 0:
+        return "부정"
+    if result1 != result2:
+        return "잘 모르겠는데요..."
     
 # Req 2-2-4. app.db 를 연동하여 웹에서 주고받는 데이터를 DB로 저장
 
+
+# 슬랙 연동 안될 시 테스트
+print(classify(preprocess("<ㄴㅁㅅㄷㅈㅁ> 1232452b345 2451 234")))
 
 # 챗봇이 멘션을 받았을 경우
 @slack_events_adaptor.on("app_mention")
