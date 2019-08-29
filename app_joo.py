@@ -76,10 +76,8 @@ def classify(text):
 def insert(text):
     conn = sqlite3.connect('app.db')
     c = conn.cursor()
-    sql = "INSERT INTO search_history (query) VALUES {};".format(text)
-    c.execute(sql)
+    c.execute('INSERT INTO search_history(query) VALUES(?)', (text,))
     conn.commit()
-    c.close()
     conn.close()
 
 # 챗봇이 멘션을 받았을 경우
@@ -89,6 +87,7 @@ def app_mentioned(event_data):
     text = event_data["event"]["text"]
 
     keywords = classify(text)
+    insert(text)
     slack_web_client.chat_postMessage(
         channel=channel,
         text=keywords
