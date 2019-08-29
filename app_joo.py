@@ -2,15 +2,12 @@ import pickle
 from threading import Thread
 import sqlite3
 
-
 import numpy as np
 from konlpy.tag import Okt
 from flask import Flask
 from slack import WebClient
 from slackeventsapi import SlackEventAdapter
 from scipy.sparse import lil_matrix
-
-from model import Model
 
 
 # slack 연동 정보 입력 부분
@@ -31,9 +28,7 @@ word_indices = model.get_word_indices()
 clf = model.get_naive_model()
 clf2 = model.get_logistic_model()
 
-print(word_indices)
 
-print('tokenize', tokenize('안녕 난 바보'))
 
 # Req 2-2-2. 토큰화 및 one-hot 임베딩하는 전 처리
 
@@ -54,16 +49,24 @@ def preprocess(text):
         indices = word_indices.get(voca)
         if indices:
             X[indices] = 1
-    return X
+    X = [X]
+    return np.array(X)
 
 
 # Req 2-2-3. 긍정 혹은 부정으로 분류
-def classify():
-
-
-
-    return None
+def classify(text):
     
+    data = preprocess(text)
+    result = clf.predict(data)[0]
+
+    if result == 1:
+        return '긍정'
+    elif result == 0:
+        return '부정'
+    else:
+        return '오류'
+
+
 # Req 2-2-4. app.db 를 연동하여 웹에서 주고받는 데이터를 DB로 저장
     
 
