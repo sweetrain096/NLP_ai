@@ -55,9 +55,9 @@ def classify(text):
     result = clf.predict(data)[0]
 
     if result == 1:
-        return '긍정'
+        return '긍정적인 리뷰'
     elif result == 0:
-        return '부정'
+        return '부정적인 리뷰'
     else:
         return '오류'
 
