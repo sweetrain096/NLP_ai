@@ -75,6 +75,7 @@ print(classify(preprocess("<ㄴㅁㅅㄷㅈㅁ> 1232452b345 2451 234")))
 def app_mentioned(event_data):
     channel = event_data["event"]["channel"]
     text = event_data["event"]["text"]
+    preprocess(text)
 
 
 @app.route("/", methods=["GET"])
