@@ -27,15 +27,27 @@ slack_web_client = WebClient(token=SLACK_TOKEN)
 with open('model.clf', 'rb') as f:
     pickle_obj = pickle.load(f)
     word_indices = pickle_obj.get_word_indices()
-    print(word_indices)
+    # print(word_indices)
     clf = pickle_obj.get_naive_model()
     clf2 = pickle_obj.get_logistic_model()
-'''
+
 # Req 2-2-2. 토큰화 및 one-hot 임베딩하는 전 처리
-def preprocess():
-
-    return None
-
+# input : 영화평 문장
+# output : 전 처리된 sparse matrix
+text = '너무 재미있어요!'
+def preprocess(text):
+    okt = Okt()
+    token = okt.pos(text)
+    X = lil_matrix((len(word_indices)+1, 1))
+    # lil_matrix는 선언 할 때 괄호 두개, 1행짜리면 뒤에 , 1 붙여주기
+    print(X)
+    for voca in token:
+        indices = word_indices.get('/'.join(voca))
+        if indices:
+            X[indices] = 1
+    return X
+print(preprocess(text))
+'''
 # Req 2-2-3. 긍정 혹은 부정으로 분류
 def classify():
 
