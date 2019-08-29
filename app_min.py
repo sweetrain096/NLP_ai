@@ -23,10 +23,9 @@ slack_web_client = WebClient(token=SLACK_TOKEN)
 with open('model.clf', 'rb') as f:
     pickle_obj = pickle.load(f)
 
-word_indices = pickle_obj.get_word_indicec
+word_indices = pickle_obj.get_word_indices
 clf = pickle_obj.get_naive_model()
 clf2 = pickle_obj.get_logistic_model()
-
 
 # Req 2-2-2. 토큰화 및 one-hot 임베딩하는 전 처리
 def preprocess():
