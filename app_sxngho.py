@@ -50,8 +50,16 @@ def preprocess(text):
 
 
 # Req 2-2-3. 긍정 혹은 부정으로 분류
-def classify():
-    return None
+def classify(text):
+    data = preprocess(text)
+    result = clf.predict(data)[0]
+
+    if result == 1:
+        return '긍정'
+    elif result == 0:
+        return '부정'
+    else:
+        return '오류'
 
 
 # Req 2-2-4. app.db 를 연동하여 웹에서 주고받는 데이터를 DB로 저장
