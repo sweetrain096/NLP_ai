@@ -11,8 +11,8 @@ from slackeventsapi import SlackEventAdapter
 from scipy.sparse import lil_matrix
 
 # slack 연동 정보 입력 부분
-SLACK_TOKEN = "xoxb-619154581858-619130324707-N5IswN8gy8ZO9mcIxVYPhrkP"
-SLACK_SIGNING_SECRET = "2e319790605d216c629f5c107aa16c2a"
+SLACK_TOKEN = "xoxb-718907786578-720177174562-oKkmHrXJhhDyxatiVMO3A9pK"
+SLACK_SIGNING_SECRET = "fa3d6193e36d26163abc90a4507ceec8"
 
 app = Flask(__name__)
 
@@ -20,9 +20,12 @@ slack_events_adaptor = SlackEventAdapter(SLACK_SIGNING_SECRET, "/listening", app
 slack_web_client = WebClient(token=SLACK_TOKEN)
 
 # Req 2-2-1. pickle로 저장된 model.clf 파일 불러오기
-pickle_obj = None
-word_indices = None
-clf = None
+with open('model.clf', 'rb') as f:
+    pickle_obj = pickle.load(f)
+
+word_indices = pickle_obj.get_word_indicec
+clf = pickle_obj.get_naive_model()
+clf2 = pickle_obj.get_logistic_model()
 
 
 # Req 2-2-2. 토큰화 및 one-hot 임베딩하는 전 처리
