@@ -68,7 +68,17 @@ def classify(X_test):
         return "잘 모르겠는데요..."
     
 # Req 2-2-4. app.db 를 연동하여 웹에서 주고받는 데이터를 DB로 저장
-
+def insert(text):
+    # app.db 파일을 연결
+    conn = sqlite3.connect('app.db')
+    # 사용할 수 있도록 설정(?)
+    c = conn.cursor()
+    # 쿼리문
+    c.execute('INSERT INTO search_history(query) VALUES(?)', (text,))
+    # 저장
+    conn.commit()
+    # app.db 파일 연결 해제
+    conn.close()
 
 # 슬랙 연동 안될 시 테스트
 # print(classify(preprocess("<ㄴㅁㅅㄷㅈㅁ> 1232452b345 2451 234")))
