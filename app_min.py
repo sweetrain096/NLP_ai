@@ -23,17 +23,33 @@ slack_web_client = WebClient(token=SLACK_TOKEN)
 with open('model.clf', 'rb') as f:
     pickle_obj = pickle.load(f)
 
-word_indices = pickle_obj.get_word_indices
+word_indices = pickle_obj.get_word_indices()
 clf = pickle_obj.get_naive_model()
 clf2 = pickle_obj.get_logistic_model()
 
 # Req 2-2-2. 토큰화 및 one-hot 임베딩하는 전 처리
-def preprocess():
-    return None
+okt = Okt()
+
+def tokenize(doc):
+    tt = okt.pos(doc, norm=True, stem=True)
+    return ['/'.join(t) for t in tt]
+
+def preprocess(sentence):
+    words = tokenize(sentence)
+    X = [0] * (len(word_indices) + 1)
+
+    for word in words:
+        indices = word_indices.get(word)
+        if indices:
+            X[indices] = 1
+
+    X = [X]
+
+    return np.array(X)
 
 
 # Req 2-2-3. 긍정 혹은 부정으로 분류
-def classify():
+def classify(sparse):
     return None
 
 
