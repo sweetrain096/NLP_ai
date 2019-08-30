@@ -23,22 +23,53 @@ slack_web_client = WebClient(token=SLACK_TOKEN)
 with open('model.clf', 'rb') as f:
     pickle_obj = pickle.load(f)
 
-word_indices = pickle_obj.get_word_indices
+word_indices = pickle_obj.get_word_indices()
 clf = pickle_obj.get_naive_model()
 clf2 = pickle_obj.get_logistic_model()
 
 # Req 2-2-2. 토큰화 및 one-hot 임베딩하는 전 처리
-def preprocess():
-    return None
+okt = Okt()
 
+def tokenize(doc):
+    tt = okt.pos(doc, norm=True, stem=True)
+    return ['/'.join(t) for t in tt]
+
+def preprocess(sentence):
+    words = tokenize(sentence)
+    X = [0] * (len(word_indices) + 1)
+
+    for word in words:
+        indices = word_indices.get(word)
+        if indices:
+            X[indices] = 1
+
+    X = [X]
+
+    return np.array(X)
 
 # Req 2-2-3. 긍정 혹은 부정으로 분류
-def classify():
-    return None
+def classify(sentence):
+    data = preprocess(sentence)
+    result = clf.predict(data)
 
+    if result == 0:
+        return '부정'
+
+    elif result == 1:
+        return '긍정'
+
+    else:
+        return '오류'
 
 # Req 2-2-4. app.db 를 연동하여 웹에서 주고받는 데이터를 DB로 저장
+def saveDB(db):
+    conn = sqlite3.connect('app.db')
+    cur = conn.cursor()
 
+    cur.execute('INSERT INTO search_history (query) VALUES (?)', (db,))
+
+    conn.commit()
+    conn.close()
 
 # 챗봇이 멘션을 받았을 경우
 @slack_events_adaptor.on("app_mention")
@@ -46,6 +77,13 @@ def app_mentioned(event_data):
     channel = event_data["event"]["channel"]
     text = event_data["event"]["text"]
 
+    keywords = classify(text)
+
+    saveDB(text)
+    slack_web_client.chat_postMessage(
+        channel = channel,
+        text=keywords
+    )
 
 @app.route("/", methods=["GET"])
 def index():
