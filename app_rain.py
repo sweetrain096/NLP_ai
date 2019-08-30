@@ -19,6 +19,8 @@ app = Flask(__name__)
 slack_events_adaptor = SlackEventAdapter(SLACK_SIGNING_SECRET, "/listening", app)
 slack_web_client = WebClient(token=SLACK_TOKEN)
 
+# 반복 금지 위해 현재 문장 저장
+return_text = ""
 
 # Req 2-2-1. pickle로 저장된 model.clf 파일 불러오기
 with open('model.clf', 'rb') as f:
@@ -52,11 +54,12 @@ def preprocess(slack_str):
 
 # Req 2-2-3. 긍정 혹은 부정으로 분류
 def classify(X_test):
-    if X_test == 0:
+    if type(X_test) == int:
         return "잘 모르겠는데요..."
+    # print(X_test)
     result1 = clf.predict(X_test)
     result2 = clf2.predict(X_test)
-    print(result1, result2)
+    # print(result1, result2)
     if result1 == result2 and result1 == 1:
         return "긍정"
     if result1 == result2 and result1 == 0:
@@ -68,14 +71,22 @@ def classify(X_test):
 
 
 # 슬랙 연동 안될 시 테스트
-print(classify(preprocess("<ㄴㅁㅅㄷㅈㅁ> 1232452b345 2451 234")))
+# print(classify(preprocess("<ㄴㅁㅅㄷㅈㅁ> 1232452b345 2451 234")))
 
 # 챗봇이 멘션을 받았을 경우
 @slack_events_adaptor.on("app_mention")
 def app_mentioned(event_data):
+    global return_text
     channel = event_data["event"]["channel"]
     text = event_data["event"]["text"]
-    preprocess(text)
+    if text != return_text:
+        return_text = text
+        reply = classify(preprocess(text))
+        print(reply)
+        slack_web_client.chat_postMessage(
+            channel=channel,
+            text=reply
+        )
 
 
 @app.route("/", methods=["GET"])
