@@ -47,11 +47,19 @@ def preprocess(sentence):
 
     return np.array(X)
 
-
 # Req 2-2-3. 긍정 혹은 부정으로 분류
-def classify(sparse):
-    return None
+def classify(sentence):
+    data = preprocess(sentence)
+    result = clf.predict(data)
 
+    if result == 0:
+        return '부정'
+
+    elif result == 1:
+        return '긍정'
+
+    else:
+        return '오류'
 
 # Req 2-2-4. app.db 를 연동하여 웹에서 주고받는 데이터를 DB로 저장
 
@@ -68,5 +76,5 @@ def index():
     return "<h1>Server is ready.</h1>"
 
 
-if __name__ == '__main__':
-    app.run()
+# if __name__ == '__main__':
+#     app.run()
