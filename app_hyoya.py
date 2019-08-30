@@ -15,6 +15,9 @@ from scipy.sparse import lil_matrix
 # slack 연동 정보 입력 부분
 SLACK_TOKEN = os.getenv('SLACK_TOKEN')
 SLACK_SIGNING_SECRET = os.getenv('SLACK_SIGNING_SECRET')
+# SLACK_TOKEN = "xoxb-732147613079-731598421525-ZFaN9ODMgK1G5CjgEgQDg2oB"
+# SLACK_SIGNING_SECRET = "82c745be0a97984513f9d7ad407b6e37"
+
 
 app = Flask(__name__)
 
@@ -73,6 +76,12 @@ def insert(text):
 def app_mentioned(event_data):
     channel = event_data["event"]["channel"]
     text = event_data["event"]["text"]
+
+    keywords = classify(text)
+    slack_web_client.chat_postMessage(
+        channel=channel,
+        text=keywords
+    )
 
 
 @app.route("/", methods=["GET"])
