@@ -22,9 +22,12 @@ slack_events_adaptor = SlackEventAdapter(SLACK_SIGNING_SECRET, "/listening", app
 slack_web_client = WebClient(token=SLACK_TOKEN)
 
 # Req 2-2-1. pickle로 저장된 model.clf 파일 불러오기
-pickle_obj = None
-word_indices = None
-clf = None
+with open('model.clf', 'rb') as f:
+    model = pickle.load(f)
+
+word_indices = model.get_word_indices()
+clf = model.get_naive_model()
+clf2 = model.get_logistic_model()
 
 # Req 2-2-2. 토큰화 및 one-hot 임베딩하는 전 처리
 def preprocess():
