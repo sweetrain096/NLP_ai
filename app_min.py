@@ -62,7 +62,14 @@ def classify(sentence):
         return '오류'
 
 # Req 2-2-4. app.db 를 연동하여 웹에서 주고받는 데이터를 DB로 저장
+def saveDB(db):
+    conn = sqlite3.connect('app.db')
+    cur = conn.cursor()
 
+    cur.execute('INSERT INTO search_history (query) VALUES (?)', (db,))
+
+    conn.commit()
+    conn.close()
 
 # 챗봇이 멘션을 받았을 경우
 @slack_events_adaptor.on("app_mention")
