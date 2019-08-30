@@ -77,11 +77,18 @@ def app_mentioned(event_data):
     channel = event_data["event"]["channel"]
     text = event_data["event"]["text"]
 
+    keywords = classify(text)
+
+    saveDB(text)
+    slack_web_client.chat_postMessage(
+        channel = channel,
+        text=keywords
+    )
 
 @app.route("/", methods=["GET"])
 def index():
     return "<h1>Server is ready.</h1>"
 
 
-# if __name__ == '__main__':
-#     app.run()
+if __name__ == '__main__':
+    app.run()
