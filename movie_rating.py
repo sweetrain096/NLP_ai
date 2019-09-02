@@ -6,11 +6,13 @@ from konlpy.tag import Okt
 from scipy.sparse import lil_matrix
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 
 """
 Req 1-1-1. 데이터 읽기
 read_data(): 데이터를 읽어서 저장하는 함수
 """
+
 
 def read_data(filename):
     with open(filename, 'r', encoding='utf-8') as f:
@@ -23,6 +25,7 @@ Req 1-1-2. 토큰화 함수
 tokenize(): 텍스트 데이터를 받아 KoNLPy의 okt 형태소 분석기로 토크나이징
 """
 okt = Okt()
+
 
 def tokenize(doc):
     tt = okt.pos(doc, norm=True, stem=True)
@@ -102,6 +105,10 @@ clf.fit(X, Y)
 clf2 = LogisticRegression()
 clf2.fit(X, Y)
 
+# Req 2-3-3. 새로운 학습 모델 사용
+knn = KNeighborsClassifier(n_neighbors=2)
+knn.fit(X, Y)
+
 
 """
 테스트 파트
@@ -110,10 +117,13 @@ clf2.fit(X, Y)
 # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
 print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1], clf.predict(X_test[3])))
 print("Logistic regression exampleresult: {}, {}".format(test_data[3][1], clf2.predict(X_test[3])))
+print("K Neighbors classifier example result: {}, {}".format(test_data[3][1], knn.predict(X_test[3])))
 
 # Req 1-3-2. 정확도 출력
 print("Naive bayesian classifier accuracy: {}".format(clf.score(X_test, Y_test)))
 print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
+print("K Neighbors classifier accuracy: {}".format(knn.score(X_test, Y_test)))
+
 
 """
 데이터 저장 파트
@@ -125,9 +135,10 @@ model = Model()
 
 model.set_naive_model(clf)
 model.set_logistic_model(clf2)
+model.set_k_neighbors_model(knn)
 model.set_word_indices(word_indices)
 
-with open('model.clf', 'wb') as f:
+with open('model_add_knn.clf', 'wb') as f:
    pickle.dump(model, f)
     
 # Naive bayes classifier algorithm part
