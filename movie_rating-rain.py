@@ -36,8 +36,8 @@ def tokenize(doc):
 """
 
 # train, test 데이터 읽기
-train_data = read_data('ratings_train.txt')
-test_data = read_data('ratings_test.txt')
+train_data = read_data('ratings_train.txt')[:5]
+test_data = read_data('ratings_test.txt')[:5]
 
 
 # Req 1-1-2. 문장 데이터 토큰화
@@ -51,16 +51,28 @@ test_docs = [(tokenize(i[1]), i[2]) for i in test_data]
 word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
+# 기존
+# for n_data in train_docs:
+#     # 품사까지 dict화
+#     for cnt in n_data[0]:
+#         if not (word_indices.get(cnt)):
+#             word_indices[cnt] = len(word_indices) + 1
+# [index, 부정, 긍정]
 for n_data in train_docs:
     # 품사까지 dict화
     for cnt in n_data[0]:
         if not (word_indices.get(cnt)):
-            word_indices[cnt] = len(word_indices) + 1
+            word_indices[cnt] = [len(word_indices) + 1, 0, 0]
+        if n_data[1] == '0':
+            word_indices[cnt][1] += 1
+        elif n_data[1] == '1':
+            word_indices[cnt][2] += 1
+
     # 문자만 dict화
     # n_data = n_data.split('/')[0]
     # if not (word_indices.get(n_data)):
     #     word_indices[n_data] = len(word_indices) + 1
-# print(word_indices)
+print(word_indices)
 
 # Req 1-1-4. sparse matrix(희소행렬 = 거의 0으로 채워지고 몇개의 값만 값이 존재) 초기화
 # X: train feature data
@@ -90,7 +102,7 @@ for n in range(len(test_docs)):
         if indices:
             X_test[n, indices] = 1
     Y_test[n] = test_docs[n][1]
-
+'''
 """
 트레이닝 파트
 clf  <- Naive baysian mdoel
@@ -140,7 +152,7 @@ model.set_word_indices(word_indices)
 
 with open('model_add_knn.clf', 'wb') as f:
    pickle.dump(model, f)
-
+'''
 # Naive bayes classifier algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
 
@@ -149,8 +161,15 @@ Naive_Bayes_Classifier 알고리즘 클래스입니다.
 """
 
 class Naive_Bayes_Classifier(object):
+    def __init__(self):
+        self.word_probs = []
 
-
+    def word_probabilities(self, counts, total_class0, total_class1, k):
+        # 단어의 빈도수를 [단어, p(w|긍정), p(w|부정)] 형태로 반환
+        return [(w,
+                 (class0 + k) / (total_class0 + 2 * k),
+                 (class1 + k) / (total_class1 + 2 * k))
+                for w, (class0, class1) in counts.items()]
     """
     Req 3-1-1.
     log_likelihoods_naivebayes():
@@ -221,9 +240,17 @@ class Naive_Bayes_Classifier(object):
     def train(self, X, Y):
         # label 0에 해당되는 데이터의 개수 값(num_0) 초기화
         num_0 = 0
+        for cnt in range(len(train_docs)):
+            if train_docs[cnt][1] == '0':
+                num_0 += len(X.rows[cnt])
         # label 1에 해당되는 데이터의 개수 값(num_1) 초기화
-        num_1 = 0
-
+        num_1 = len(word_indices) - num_0
+        print(num_0, num_1)
+        word_probs = self.word_probabilities(word_indices,
+                                                  num_0,
+                                                  num_1,
+                                                  0.5)
+        print(word_probs)
         # Req 3-1-7. smoothing 조절
         # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
         smoothing = None
@@ -285,6 +312,9 @@ class Naive_Bayes_Classifier(object):
     def score(self, X_test, Y_test):
         
         return None
+
+model = Naive_Bayes_Classifier()
+model.train(X, Y)
 '''
 # Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
 model = None
