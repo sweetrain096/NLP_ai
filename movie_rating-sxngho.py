@@ -143,7 +143,7 @@ with open('model_add_knn.clf', 'wb') as f:
     
 # Naive bayes classifier algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
-'''
+
 """
 Naive_Bayes_Classifier 알고리즘 클래스입니다.
 """
@@ -306,8 +306,7 @@ class Logistic_Regression_Classifier(object):
     인풋값의 sigmoid 함수 값을 리턴
     """
     def sigmoid(self,z):
-        
-        return None
+        return 1 / (1 + np.exp(-z))
 
     """
     Req 3-3-2.
@@ -425,4 +424,3 @@ model2 = None
 # Req 3-4-2. 정확도 측정
 print("Logistic_Regression_Classifier accuracy: {}".format(None))
 
-'''
