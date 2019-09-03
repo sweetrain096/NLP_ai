@@ -304,8 +304,10 @@ class Logistic_Regression_Classifier(object):
     인풋값의 sigmoid 함수 값을 리턴
     """
     def sigmoid(self,z):
-
-        return None
+        new_z = []
+        for item in z:
+            new_z.append(1 / (1 + np.exp(-item)))
+        return new_z
 
     """
     Req 3-3-2.
@@ -318,8 +320,10 @@ class Logistic_Regression_Classifier(object):
 
     def prediction(self, beta_x, beta_c, X):
         # 예측 확률 P(class=1)을 계산하는 식을 만든다.
+        equation = X @ beta_x.T + beta_c
+        for i in range():
 
-        return None
+        return np.array(equation)
 
     """
     Req 3-3-3.
