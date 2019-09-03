@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 from model import Model
+import math
 
 from konlpy.tag import Okt
 from scipy.sparse import lil_matrix
@@ -46,6 +47,7 @@ test_data = read_data('ratings_test.txt')[:3]
 
 train_docs = [(tokenize(i[1]), i[2]) for i in train_data]
 test_docs = [(tokenize(i[1]), i[2]) for i in test_data]
+print('train_docs', train_docs)
 
 # Req 1-1-3. word_indices 초기화
 word_indices = {}
@@ -171,9 +173,9 @@ class Naive_Bayes_Classifier(object):
     def log_likelihoods_naivebayes(self, feature_vector, Class):
         log_likelihood = 0.0
         print(feature_vector)
-        if Class == 0:
-            for feature_index in range(len(feature_vector)):
-                print(feature_vector[1][1])
+        # if Class == 0:
+            # for feature_index in range(len(feature_vector)):
+                # print(feature_vector[1][1])
                 # if feature_vector[feature_index] == 1: #feature present
                 #     log_likelihood += None
                 # elif feature_vector[feature_index] == 0: #feature absent
@@ -200,8 +202,8 @@ class Naive_Bayes_Classifier(object):
         log_likelihood_0 = self.log_likelihoods_naivebayes(feature_vector, Class = 0)
         log_likelihood_1 = self.log_likelihoods_naivebayes(feature_vector, Class = 1)
 
-        log_posterior_0 = None
-        log_posterior_1 = None
+        log_posterior_0 = log_likelihood_0
+        log_posterior_1 = log_likelihood_1
 
         return None
 
