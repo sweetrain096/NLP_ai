@@ -304,10 +304,7 @@ class Logistic_Regression_Classifier(object):
     인풋값의 sigmoid 함수 값을 리턴
     """
     def sigmoid(self,z):
-        new_z = []
-        for item in z:
-            new_z.append(1 / (1 + np.exp(-item)))
-        return new_z
+        return 1 / (1 + np.exp(-z))
 
     """
     Req 3-3-2.
@@ -320,10 +317,9 @@ class Logistic_Regression_Classifier(object):
 
     def prediction(self, beta_x, beta_c, X):
         # 예측 확률 P(class=1)을 계산하는 식을 만든다.
-        equation = X @ beta_x.T + beta_c
-        for i in range():
+        equation = X @ beta_x + beta_c
 
-        return np.array(equation)
+        return equation.reshape(-1, 1)
 
     """
     Req 3-3-3.
@@ -348,7 +344,7 @@ class Logistic_Regression_Classifier(object):
     알고리즘 구성
     1) 가중치 값인 beta_x_i, beta_c_i 초기화
     2) Y label 데이터 reshape
-    3) 가중치 업데이트 과정 (iters번 반복) 
+    3) 가중치 업데이트 과정 (iters번 반복)
     3-1) prediction 함수를 사용하여 error 계산
     3-2) gadient_beta 함수를 사용하여 가중치 값 업데이트
     4) 최적화 된 가중치 값들 리턴
@@ -358,7 +354,7 @@ class Logistic_Regression_Classifier(object):
     def train(self, X, Y):
         # Req 3-3-8. learning rate 조절
         # 학습률(learning rate)를 설정한다.(권장: 1e-3 ~ 1e-6)
-        lr = 1e-2
+        lr = 1e-3
         # 반복 횟수(iteration)를 설정한다.(자연수)
         iters = 200
 
@@ -367,11 +363,11 @@ class Logistic_Regression_Classifier(object):
         beta_c_i = None
 
         #행렬 계산을 위하여 Y데이터의 사이즈를 (len(Y),1)로 저장합니다.
-        Y=None
+        Y= Y.reshape((len(Y), 1))
 
         for i in range(iters):
             #실제 값 Y와 예측 값의 차이를 계산하여 error를 정의합니다.
-            error = None
+            error = Y[i] - prediction(beta_x_i, beta_c_i, X)
             #gredient_beta함수를 통하여 델타값들을 업데이트 합니다.
             beta_x_delta, beta_c_delta = self.gradient_beta(None)
             beta_x_i -= beta_x_delta.T
