@@ -175,7 +175,7 @@ class Naive_Bayes_Classifier(object):
     
     def log_likelihoods_naivebayes(self, feature_vector, Class):
         log_likelihood = 0.0
-
+        print(feature_vector)
         if Class == 0:
             for feature_index in range(len(feature_vector)):
                 if feature_vector[feature_index] == 1: #feature present
@@ -265,17 +265,18 @@ class Naive_Bayes_Classifier(object):
         # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
         smoothing = 0.5
 
-        # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산        
-        self.likelihoods_0 = None
-        self.likelihoods_1 = None
+        # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산
+        # likelihood.shape = 1, X.shape[1]
+        self.likelihoods_0 = ((num_token_0 + smoothing) / (num_0 + 2 * smoothing))
+        self.likelihoods_1 = ((num_token_1 + smoothing) / (num_1 + 2 * smoothing))
 
         # 각 class의 prior를 계산
-        prior_probability_0 = None
-        prior_probability_1 = None
+        prior_probability_0 = num_0 / (num_0 + num_1)
+        prior_probability_1 = num_1 / (num_0 + num_1)
 
-        # pior의 log값 계
-        self.log_prior_0 = None
-        self.log_prior_1 = None
+        # prior의 log값 계
+        self.log_prior_0 = np.log(self.likelihoods_0 / prior_probability_0)
+        self.log_prior_1 = np.log(self.likelihoods_1 / prior_probability_1)
 
         return None
 
