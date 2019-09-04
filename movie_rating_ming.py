@@ -21,6 +21,7 @@ def read_data(filename):
         datas = datas[1:]
     return datas
 
+
 """
 Req 1-1-2. 토큰화 함수
 tokenize(): 텍스트 데이터를 받아 KoNLPy의 okt 형태소 분석기로 토크나이징
@@ -32,6 +33,7 @@ def tokenize(doc):
     tt = okt.pos(doc, norm=True, stem=True)
     return ['/'.join(t) for t in tt]
 
+
 """
 데이터 전 처리
 """
@@ -39,7 +41,6 @@ def tokenize(doc):
 # train, test 데이터 읽기
 train_data = read_data('ratings_train.txt')[:3]
 test_data = read_data('ratings_test.txt')[:3]
-
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
@@ -69,7 +70,6 @@ for n_data in train_docs:
 # X_test: test feature data
 X = lil_matrix((len(train_data), len(word_indices) + 1))
 X_test = lil_matrix((len(test_data), len(word_indices) + 1))
-
 
 # 평점 label 데이터가 저장될 Y 행렬 초기화
 # Y: train data label
@@ -144,8 +144,6 @@ with open('model_add_knn.clf', 'wb') as f:
    pickle.dump(model, f)
 '''
 
-
-
 # Naive bayes classifier algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
 
@@ -153,8 +151,8 @@ with open('model_add_knn.clf', 'wb') as f:
 Naive_Bayes_Classifier 알고리즘 클래스입니다.
 """
 
-class Naive_Bayes_Classifier(object):
 
+class Naive_Bayes_Classifier(object):
     # def __init__(self):
     #     print(dir(object))
 
@@ -174,12 +172,12 @@ class Naive_Bayes_Classifier(object):
         log_likelihood = 0.0
         print(feature_vector)
         # if Class == 0:
-            # for feature_index in range(len(feature_vector)):
-                # print(feature_vector[1][1])
-                # if feature_vector[feature_index] == 1: #feature present
-                #     log_likelihood += None
-                # elif feature_vector[feature_index] == 0: #feature absent
-                #     log_likelihood += None
+        # for feature_index in range(len(feature_vector)):
+        # print(feature_vector[1][1])
+        # if feature_vector[feature_index] == 1: #feature present
+        #     log_likelihood += None
+        # elif feature_vector[feature_index] == 0: #feature absent
+        #     log_likelihood += None
         # elif Class == 1:
         #     for feature_index in range(len(feature_vector)):
         #         if feature_vector[feature_index] == 1:
@@ -189,7 +187,6 @@ class Naive_Bayes_Classifier(object):
 
         # return None
 
-
     '''
     """
     Req 3-1-2.
@@ -197,7 +194,7 @@ class Naive_Bayes_Classifier(object):
     feature 데이터를 받아 label(class)값에 해당되는 posterior 값들을
     구하고 그 값의 log값을 리턴
     """
-    
+
     def class_posteriors(self, feature_vector):
         log_likelihood_0 = self.log_likelihoods_naivebayes(feature_vector, Class = 0)
         log_likelihood_1 = self.log_likelihoods_naivebayes(feature_vector, Class = 1)
@@ -216,7 +213,7 @@ class Naive_Bayes_Classifier(object):
 
     def classify(self, feature_vector):
         return None
-
+    '''
     """
     Req 3-1-4.
     train():
@@ -241,25 +238,27 @@ class Naive_Bayes_Classifier(object):
 
         # Req 3-1-7. smoothing 조절
         # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
-        smoothing = None
+        smoothing = 1e-4
 
         # label 0에 해당되는 각 feature 성분의 개수값(num_token_0) 초기화 
         num_token_0 = np.zeros((1,X.shape[1]))
         # label 1에 해당되는 각 feature 성분의 개수값(num_token_1) 초기화 
         num_token_1 = np.zeros((1,X.shape[1]))
 
-        
+
         # 데이터의 num_0,num_1,num_token_0,num_token_1 값 계산     
         for i in range(X.shape[0]):
             if (Y[i] == 0):
                 num_0 += 1
-                num_token_0 += None
-        
+                num_token_0 += X[i]
+
             if (Y[i] == 1):
                 num_1 += 1
-                num_token_1 += None
+                num_token_1 += X[i]
+        print(num_token_0)
 
-        # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산        
+        # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산
+        # 단어당 확률?
         self.likelihoods_0 = None
         self.likelihoods_1 = None
 
@@ -272,7 +271,7 @@ class Naive_Bayes_Classifier(object):
         self.log_prior_1 = None
 
         return None
-
+    '''
     """
     Req 3-1-5.
     predict():
@@ -287,7 +286,7 @@ class Naive_Bayes_Classifier(object):
         else:
             for case in X_test:
                 predictions.append(None)
-        
+
         return predictions
 
     """
@@ -296,9 +295,9 @@ class Naive_Bayes_Classifier(object):
     테스트를 데이터를 받아 예측된 데이터(predict 함수)와
     테스트 데이터의 label값을 비교하여 정확도를 계산
     """
-    
+
     def score(self, X_test, Y_test):
-        
+
         return None
 
 # Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
@@ -315,14 +314,14 @@ Logistic_Regression_Classifier 알고리즘 클래스입니다.
 """
 
 class Logistic_Regression_Classifier(object):
-    
+
     """
     Req 3-3-1.
     sigmoid():
     인풋값의 sigmoid 함수 값을 리턴
     """
     def sigmoid(self,z):
-        
+
         return None
 
     """
@@ -336,7 +335,7 @@ class Logistic_Regression_Classifier(object):
 
     def prediction(self, beta_x, beta_c, X):
         # 예측 확률 P(class=1)을 계산하는 식을 만든다.
-    
+
         return None
 
     """
@@ -344,13 +343,13 @@ class Logistic_Regression_Classifier(object):
     gradient_beta():
     beta값에 해당되는 gradient값을 계산하고 learning rate를 곱하여 출력.
     """
-    
+
     def gradient_beta(self, X, error, lr):
         # beta_x를 업데이트하는 규칙을 정의한다.
         beta_x_delta = None
         # beta_c를 업데이트하는 규칙을 정의한다.
         beta_c_delta = None
-    
+
         return beta_x_delta, beta_c_delta
 
     """
@@ -368,21 +367,21 @@ class Logistic_Regression_Classifier(object):
     4) 최적화 된 가중치 값들 리턴
        self.beta_x, self.beta_c
     """
-    
+
     def train(self, X, Y):
         # Req 3-3-8. learning rate 조절
         # 학습률(learning rate)를 설정한다.(권장: 1e-3 ~ 1e-6)
         lr = 1e-2
         # 반복 횟수(iteration)를 설정한다.(자연수)
         iters = 200
-        
+
         # beta_x, beta_c값을 업데이트 하기 위하여 beta_x_i, beta_c_i값을 초기화
         beta_x_i = None
         beta_c_i = None
-    
+
         #행렬 계산을 위하여 Y데이터의 사이즈를 (len(Y),1)로 저장합니다.
         Y=None
-    
+
         for i in range(iters):
             #실제 값 Y와 예측 값의 차이를 계산하여 error를 정의합니다.
             error = None
@@ -390,10 +389,10 @@ class Logistic_Regression_Classifier(object):
             beta_x_delta, beta_c_delta = self.gradient_beta(None)
             beta_x_i -= beta_x_delta.T
             beta_c_i -= beta_c_delta
-            
+
         self.beta_x = beta_x_i
         self.beta_c = beta_c_i
-        
+
         return None
 
     """
@@ -403,7 +402,7 @@ class Logistic_Regression_Classifier(object):
     """
 
     def classify(self, X_test):
-        
+
         return None
 
     """
@@ -411,7 +410,7 @@ class Logistic_Regression_Classifier(object):
     predict():
     테스트 데이터에 대해서 예측 label값을 출력해주는 함수
     """
-    
+
     def predict(self, X_test):
         predictions = []
         X_test=X_test.toarray()
@@ -420,7 +419,7 @@ class Logistic_Regression_Classifier(object):
         else:
             for case in X_test:
                 predictions.append(None)
-        
+
         return predictions
 
 
@@ -430,7 +429,7 @@ class Logistic_Regression_Classifier(object):
     테스트를 데이터를 받아 예측된 데이터(predict 함수)와
     테스트 데이터의 label값을 비교하여 정확도를 계산
     """
-    
+
     def score(self, X_test, Y_test):
 
         return None
@@ -442,6 +441,8 @@ model2 = None
 print("Logistic_Regression_Classifier accuracy: {}".format(None))
 
 '''
-a = Naive_Bayes_Classifier()
-a.log_likelihoods_naivebayes(word_indices, Class=0)
+
+
+model = Naive_Bayes_Classifier()
+a = model.train(X, Y)
 print(a)
