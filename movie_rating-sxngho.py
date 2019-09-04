@@ -96,7 +96,7 @@ for n in range(len(test_docs)):
 clf  <- Naive baysian mdoel
 clf2 <- Logistic regresion model
 """
-
+'''
 # Req 1-2-1. Naive bayes model 학습
 clf = MultinomialNB()
 clf.fit(X, Y)
@@ -293,7 +293,7 @@ print("Naive_Bayes_Classifier accuracy: {}".format(None))
 
 # Logistic regression algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
-
+'''
 """
 Logistic_Regression_Classifier 알고리즘 클래스입니다.
 """
@@ -306,7 +306,7 @@ class Logistic_Regression_Classifier(object):
     인풋값의 sigmoid 함수 값을 리턴
     """
     def sigmoid(self,z):
-        return 1 / (1 + np.exp(-z))
+        return 1/ (1+np.exp(-z))
 
     """
     Req 3-3-2.
@@ -319,8 +319,8 @@ class Logistic_Regression_Classifier(object):
 
     def prediction(self, beta_x, beta_c, X):
         # 예측 확률 P(class=1)을 계산하는 식을 만든다.
-    
-        return None
+        equation = X * beta_x + beta_c
+        return equation
 
     """
     Req 3-3-3.
@@ -330,9 +330,9 @@ class Logistic_Regression_Classifier(object):
     
     def gradient_beta(self, X, error, lr):
         # beta_x를 업데이트하는 규칙을 정의한다.
-        beta_x_delta = None
+        beta_x_delta = lr/len(X) * np.sum(X * ( error ), axis=0 )
         # beta_c를 업데이트하는 규칙을 정의한다.
-        beta_c_delta = None
+        beta_c_delta = lr/len(X) * np.sum(error, axis=0)
     
         return beta_x_delta, beta_c_delta
 
@@ -360,24 +360,24 @@ class Logistic_Regression_Classifier(object):
         iters = 200
         
         # beta_x, beta_c값을 업데이트 하기 위하여 beta_x_i, beta_c_i값을 초기화
-        beta_x_i = None
-        beta_c_i = None
+        beta_x_i = 1
+        beta_c_i = 0
     
         #행렬 계산을 위하여 Y데이터의 사이즈를 (len(Y),1)로 저장합니다.
-        Y=None
+        Y= Y.reshape(-1,1)
     
         for i in range(iters):
             #실제 값 Y와 예측 값의 차이를 계산하여 error를 정의합니다.
-            error = None
+            error = self.prediction(beta_x_i,beta_c_i,X) - Y
             #gredient_beta함수를 통하여 델타값들을 업데이트 합니다.
-            beta_x_delta, beta_c_delta = self.gradient_beta(None)
+            beta_x_delta, beta_c_delta = self.gradient_beta(X,error,lr)
             beta_x_i -= beta_x_delta.T
             beta_c_i -= beta_c_delta
             
         self.beta_x = beta_x_i
         self.beta_c = beta_c_i
         
-        return None
+        return self.beta_x,self.beta_c
 
     """
     Req 3-3-5.
@@ -386,8 +386,7 @@ class Logistic_Regression_Classifier(object):
     """
 
     def classify(self, X_test):
-        
-        return None
+        return self.sigmoid(X_test.round())
 
     """
     Req 3-3-6.
@@ -399,12 +398,14 @@ class Logistic_Regression_Classifier(object):
         predictions = []
         X_test=X_test.toarray()
         if (len(X_test)==1):
-            predictions.append(None)
+            predictions.append(self.classify(X_test[0]))
         else:
             for case in X_test:
-                predictions.append(None)
+                predictions.append(self.classify(case))
         
         return predictions
+
+
 
 
     """
@@ -415,12 +416,26 @@ class Logistic_Regression_Classifier(object):
     """
     
     def score(self, X_test, Y_test):
+        res = self.predict(X_test)
 
-        return None
+        O = 0
+        X = 0
+
+        for i in range(res):
+            if res[i] == Y_test[i]:
+                O += 1
+            else:
+                X += 1
+        ans = 0;
+        if O >= X:
+            ans = O / (O+X);
+        else:
+            ans = X / (O+X);
+        return ans
 
 # Req 3-4-1. model2에 Logistic_Regression_Classifier 클래스를 사용하여 학습합니다.
-model2 = None
+model2 = Logistic_Regression_Classifier().train(X,Y)
+
 
 # Req 3-4-2. 정확도 측정
-print("Logistic_Regression_Classifier accuracy: {}".format(None))
-
+print("Logistic_Regression_Classifier accuracy: {}".format(model2.score(X_test,Y_test)))
