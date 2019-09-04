@@ -246,21 +246,23 @@ class Naive_Bayes_Classifier(object):
         # label 1에 해당되는 데이터의 개수 값(num_1) 초기화
         num_1 = len(word_indices) - num_0
         print(num_0, num_1)
+
+        # Req 3-1-7. smoothing 조절
+        # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
+        smoothing = 0.5
+
+        # 단어의 부정/긍정 확률 계산
         word_probs = self.word_probabilities(word_indices,
                                                   num_0,
                                                   num_1,
-                                                  0.5)
+                                             smoothing)
         print(word_probs)
-        # Req 3-1-7. smoothing 조절
-        # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
-        smoothing = None
 
-        # label 0에 해당되는 각 feature 성분의 개수값(num_token_0) 초기화 
+        # label 0에 해당되는 각 feature 성분의 개수값(num_token_0) 초기화
         num_token_0 = np.zeros((1,X.shape[1]))
         # label 1에 해당되는 각 feature 성분의 개수값(num_token_1) 초기화 
         num_token_1 = np.zeros((1,X.shape[1]))
 
-        
         # 데이터의 num_0,num_1,num_token_0,num_token_1 값 계산     
         for i in range(X.shape[0]):
             if (Y[i] == 0):
