@@ -37,8 +37,8 @@ def tokenize(doc):
 """
 
 # train, test 데이터 읽기
-train_data = read_data('ratings_train.txt')[:3]
-test_data = read_data('ratings_test.txt')[:3]
+train_data = read_data('ratings_train.txt')[:10]
+test_data = read_data('ratings_test.txt')[:10]
 
 
 # Req 1-1-2. 문장 데이터 토큰화
@@ -54,16 +54,27 @@ word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
 for n_data in train_docs:
+    # print(f'n_data {type(n_data[1])}')
     # 품사까지 dict화
-    for cnt in n_data[0]:
-        if not (word_indices.get(cnt)):
-            word_indices[cnt] = len(word_indices) + 1
+    for cnt in range(len(n_data[0])):
+        # print(f'{n_data[0][cnt]} {cnt}')
+        # print(word_indices.get(cnt))
+        if not (word_indices.get(n_data[0][cnt])):
+            # word_indices에 없으면 추가
+            # print(word_indices.get(n_data[0][cnt]))
+            word_indices[n_data[0][cnt]] = [len(word_indices) + 1, 0, 0]
+            # print(f'{word_indices[n_data[0][cnt]][0]} {n_data[0][cnt]}')
+            word_indices[n_data[0][cnt]][int(n_data[1])+1] = 1
+            # print(word_indices[n_data[0][cnt]])
+        else:
+            # print(f'aa {word_indices[n_data[0][cnt]][int(n_data[1]) + 1]}')
+            word_indices[n_data[0][cnt]][int(n_data[1]) + 1] += 1
+    # print(word_indices)
+        # 있으면 부정, 긍정 +1
     # 문자만 dict화
     # n_data = n_data.split('/')[0]
     # if not (word_indices.get(n_data)):
     #     word_indices[n_data] = len(word_indices) + 1
-# print(word_indices)
-
 # Req 1-1-4. sparse matrix(희소행렬 = 거의 0으로 채워지고 몇개의 값만 값이 존재) 초기화
 # X: train feature data
 # X_test: test feature data
@@ -82,8 +93,13 @@ Y_test = np.zeros(((len(test_data))))
 for n in range(len(train_docs)):
     for token in train_docs[n][0]:
         indices = word_indices.get(token)
+        print(indices)
+
+        '''
+        indices = word_indices.get(token)
         if indices:
             X[n, indices] = 1
+            # print(indices)
     Y[n] = train_docs[n][1]
 
 for n in range(len(test_docs)):
@@ -98,7 +114,8 @@ for n in range(len(test_docs)):
 clf  <- Naive baysian mdoel
 clf2 <- Logistic regresion model
 """
-'''
+
+
 # Req 1-2-1. Naive bayes model 학습
 clf = MultinomialNB()
 clf.fit(X, Y)
@@ -145,7 +162,6 @@ with open('model_add_knn.clf', 'wb') as f:
 '''
 
 
-
 # Naive bayes classifier algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
 
@@ -169,7 +185,7 @@ class Naive_Bayes_Classifier(object):
     class : label 값인 0 or 1
     output : class에 해당되는 likelihood 확률의 로그 값
     """
-
+    '''
     def log_likelihoods_naivebayes(self, feature_vector, Class):
         log_likelihood = 0.0
         print(feature_vector)
@@ -190,7 +206,7 @@ class Naive_Bayes_Classifier(object):
         # return None
 
 
-    '''
+
     """
     Req 3-1-2.
     class_posteriors():
@@ -216,7 +232,7 @@ class Naive_Bayes_Classifier(object):
 
     def classify(self, feature_vector):
         return None
-
+    '''
     """
     Req 3-1-4.
     train():
@@ -241,7 +257,7 @@ class Naive_Bayes_Classifier(object):
 
         # Req 3-1-7. smoothing 조절
         # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
-        smoothing = None
+        smoothing = 1e-4
 
         # label 0에 해당되는 각 feature 성분의 개수값(num_token_0) 초기화 
         num_token_0 = np.zeros((1,X.shape[1]))
@@ -253,12 +269,13 @@ class Naive_Bayes_Classifier(object):
         for i in range(X.shape[0]):
             if (Y[i] == 0):
                 num_0 += 1
-                num_token_0 += None
+                num_token_0 += X[i]
         
             if (Y[i] == 1):
                 num_1 += 1
-                num_token_1 += None
-
+                num_token_1 += X[i]
+        print(num_0)
+        print(num_token_0)
         # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산        
         self.likelihoods_0 = None
         self.likelihoods_1 = None
@@ -268,8 +285,8 @@ class Naive_Bayes_Classifier(object):
         prior_probability_1 = None
 
         # pior의 log값 계
-        self.log_prior_0 = None
-        self.log_prior_1 = None
+        # self.log_prior_0 = math.log()
+        # self.log_prior_1 = math.log()
 
         return None
 
