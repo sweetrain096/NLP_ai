@@ -91,7 +91,7 @@ Y_test = np.zeros(((len(test_data))))
 # X,Y 벡터값 채우기
 for n in range(len(train_docs)):
     for token in train_docs[n][0]:
-        indices = word_indices.get(token)
+        indices = word_indices.get(token)[0]
         if indices:
             X[n, indices] = 1
     Y[n] = train_docs[n][1]
@@ -165,11 +165,11 @@ class Naive_Bayes_Classifier(object):
         self.word_probs = []
 
     def word_probabilities(self, counts, total_class0, total_class1, k):
-        # 단어의 빈도수를 [단어, p(w|긍정), p(w|부정)] 형태로 반환
+        # 단어의 빈도수를 [단어, p(w|부정), p(w|긍정)] 형태로 반환
         return [(w,
                  (class0 + k) / (total_class0 + 2 * k),
                  (class1 + k) / (total_class1 + 2 * k))
-                for w, (class0, class1) in counts.items()]
+                for w, [index, class0, class1] in counts.items()]
     """
     Req 3-1-1.
     log_likelihoods_naivebayes():
