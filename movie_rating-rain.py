@@ -62,11 +62,7 @@ for n_data in train_docs:
     # 품사까지 dict화
     for cnt in n_data[0]:
         if not (word_indices.get(cnt)):
-            word_indices[cnt] = [len(word_indices) + 1, 0, 0]
-        if n_data[1] == '0':
-            word_indices[cnt][1] += 1
-        elif n_data[1] == '1':
-            word_indices[cnt][2] += 1
+            word_indices[cnt] = len(word_indices) + 1
 
     # 문자만 dict화
     # n_data = n_data.split('/')[0]
@@ -91,7 +87,7 @@ Y_test = np.zeros(((len(test_data))))
 # X,Y 벡터값 채우기
 for n in range(len(train_docs)):
     for token in train_docs[n][0]:
-        indices = word_indices.get(token)[0]
+        indices = word_indices.get(token)
         if indices:
             X[n, indices] = 1
     Y[n] = train_docs[n][1]
@@ -161,15 +157,15 @@ Naive_Bayes_Classifier 알고리즘 클래스입니다.
 """
 
 class Naive_Bayes_Classifier(object):
-    def __init__(self):
-        self.word_probs = []
-
-    def word_probabilities(self, counts, total_class0, total_class1, k):
-        # 단어의 빈도수를 [단어, p(w|부정), p(w|긍정)] 형태로 반환
-        return [(w,
-                 (class0 + k) / (total_class0 + 2 * k),
-                 (class1 + k) / (total_class1 + 2 * k))
-                for w, [index, class0, class1] in counts.items()]
+    # def __init__(self):
+    #     self.word_probs = []
+    #
+    # def word_probabilities(self, counts, total_class0, total_class1, k):
+    #     # 단어의 빈도수를 [단어, p(w|부정), p(w|긍정)] 형태로 반환
+    #     return [(w,
+    #              (class0 + k) / (total_class0 + 2 * k),
+    #              (class1 + k) / (total_class1 + 2 * k))
+    #             for w, [index, class0, class1] in counts.items()]
     """
     Req 3-1-1.
     log_likelihoods_naivebayes():
@@ -240,38 +236,34 @@ class Naive_Bayes_Classifier(object):
     def train(self, X, Y):
         # label 0에 해당되는 데이터의 개수 값(num_0) 초기화
         num_0 = 0
-        for cnt in range(len(train_docs)):
-            if train_docs[cnt][1] == '0':
-                num_0 += len(X.rows[cnt])
-        # label 1에 해당되는 데이터의 개수 값(num_1) 초기화
-        num_1 = len(word_indices) - num_0
-        print(num_0, num_1)
+        num_1 = 0
 
-        # Req 3-1-7. smoothing 조절
-        # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
-        smoothing = 0.5
-
+        '''
         # 단어의 부정/긍정 확률 계산
         word_probs = self.word_probabilities(word_indices,
                                                   num_0,
                                                   num_1,
                                              smoothing)
         print(word_probs)
-
+        '''
         # label 0에 해당되는 각 feature 성분의 개수값(num_token_0) 초기화
-        num_token_0 = np.zeros((1,X.shape[1]))
+        num_token_0 = np.zeros((1, X.shape[1]))
         # label 1에 해당되는 각 feature 성분의 개수값(num_token_1) 초기화 
-        num_token_1 = np.zeros((1,X.shape[1]))
+        num_token_1 = np.zeros((1, X.shape[1]))
 
         # 데이터의 num_0,num_1,num_token_0,num_token_1 값 계산     
         for i in range(X.shape[0]):
             if (Y[i] == 0):
                 num_0 += 1
-                num_token_0 += None
-        
+                num_token_0 += X[i]
+
             if (Y[i] == 1):
                 num_1 += 1
-                num_token_1 += None
+                num_token_1 += X[i]
+
+        # Req 3-1-7. smoothing 조절
+        # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
+        smoothing = 0.5
 
         # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산        
         self.likelihoods_0 = None
