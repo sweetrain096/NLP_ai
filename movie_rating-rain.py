@@ -64,6 +64,7 @@ for n_data in train_docs:
         if not (word_indices.get(cnt)):
             word_indices[cnt] = len(word_indices) + 1
 
+
     # 문자만 dict화
     # n_data = n_data.split('/')[0]
     # if not (word_indices.get(n_data)):
@@ -236,6 +237,7 @@ class Naive_Bayes_Classifier(object):
     def train(self, X, Y):
         # label 0에 해당되는 데이터의 개수 값(num_0) 초기화
         num_0 = 0
+
         num_1 = 0
 
         '''
@@ -255,6 +257,7 @@ class Naive_Bayes_Classifier(object):
         for i in range(X.shape[0]):
             if (Y[i] == 0):
                 num_0 += 1
+
                 num_token_0 += X[i]
 
             if (Y[i] == 1):
