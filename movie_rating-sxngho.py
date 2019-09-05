@@ -185,7 +185,7 @@ class Naive_Bayes_Classifier(object):
 
 
         log_posterior_1 = log_likelihood_1 - np.log(0.5)
-    
+
         return (log_posterior_0, log_posterior_1)
 
     """
@@ -193,11 +193,16 @@ class Naive_Bayes_Classifier(object):
     classify():
     feature 데이터에 해당되는 posterir값들(class 개수)을 불러와 비교하여
     더 높은 확률을 갖는 class를 리턴
-    """    
+    """
 
     def classify(self, feature_vector):
-        return None
 
+        prob_0, prob_1 = self.class_posteriors(feature_vector)
+        if prob_0 >= prob_1:
+            return 0
+        else:
+            return 1
+        
     """
     Req 3-1-4.
     train():
