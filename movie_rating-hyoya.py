@@ -206,13 +206,11 @@ class Naive_Bayes_Classifier(object):
     """
 
     def class_posteriors(self, feature_vector):
-        log_likelihood_0 = self.log_likelihoods_naivebayes(feature_vector, Class = 0)
-        log_likelihood_1 = self.log_likelihoods_naivebayes(feature_vector, Class = 1)
-
-        log_posterior_0 = None
-        log_posterior_1 = None
-
-        return None
+        log_likelihood_0 = self.log_likelihoods_naivebayes(feature_vector, Class=0)
+        log_likelihood_1 = self.log_likelihoods_naivebayes(feature_vector, Class=1)
+        log_posterior_0 = log_likelihood_0 - np.log(0.5)
+        log_posterior_1 = log_likelihood_1 - np.log(0.5)
+        return (log_posterior_0, log_posterior_1)
 
     """
     Req 3-1-3.
