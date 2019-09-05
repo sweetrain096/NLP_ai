@@ -369,7 +369,7 @@ class Logistic_Regression_Classifier(object):
             #실제 값 Y와 예측 값의 차이를 계산하여 error를 정의합니다.
             error = Y[i] - prediction(beta_x_i, beta_c_i, X)
             #gredient_beta함수를 통하여 델타값들을 업데이트 합니다.
-            beta_x_delta, beta_c_delta = self.gradient_beta(None)
+            beta_x_delta, beta_c_delta = self.gradient_beta(X, error, lr)
             beta_x_i -= beta_x_delta.T
             beta_c_i -= beta_c_delta
 
