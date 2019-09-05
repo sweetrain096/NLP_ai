@@ -420,8 +420,12 @@ class Logistic_Regression_Classifier(object):
     """
 
     def score(self, X_test, Y_test):
-
-        return None
+        result = 0
+        X_test = X_test.toarray()
+        for i in range(len(X_test)):
+            if self.predict(X_test)[i] == Y_test[i]:
+                result += 1
+        return result/len(X_test)
 
 # Req 3-4-1. model2에 Logistic_Regression_Classifier 클래스를 사용하여 학습합니다.
 model2 = None
