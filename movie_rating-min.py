@@ -317,7 +317,7 @@ class Logistic_Regression_Classifier(object):
 
     def prediction(self, beta_x, beta_c, X):
         # 예측 확률 P(class=1)을 계산하는 식을 만든다.
-        equation = X @ beta_x + beta_c
+        equation = X @ beta_x.T + beta_c
 
         return equation.reshape(-1, 1)
 
