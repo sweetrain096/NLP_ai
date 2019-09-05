@@ -304,14 +304,25 @@ class Naive_Bayes_Classifier(object):
     """
 
     def score(self, X_test, Y_test):
+        same = 0
+        diff = 0
+        pred_X = self.predict(X_test)
 
-        return None
+        for _ in range(len(pred_X)):
+            if pred_X[_] == Y_test[_]:
+                same += 1
+            else:
+                diff += 1
+
+        return same / len(pred_X)
+
 
 # Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
-model = None
+nbc = Naive_Bayes_Classifier()
+nbc.train(X, Y)
 
 # Req 3-2-2. 정확도 측정
-print("Naive_Bayes_Classifier accuracy: {}".format(None))
+print("Naive_Bayes_Classifier accuracy: {}".format(nbc.score(X_test, Y_test)))
 
 # Logistic regression algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
