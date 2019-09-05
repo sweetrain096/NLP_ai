@@ -431,4 +431,4 @@ class Logistic_Regression_Classifier(object):
 model2 = Logistic_Regression_Classifier()
 
 # Req 3-4-2. 정확도 측정
-print("Logistic_Regression_Classifier accuracy: {}".format(None))
+print("Logistic_Regression_Classifier accuracy: {}".format(model2.score(X_test, Y_test)))
