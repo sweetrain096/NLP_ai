@@ -250,35 +250,33 @@ class Naive_Bayes_Classifier(object):
 
         # Req 3-1-7. smoothing 조절
         # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
-        smoothing = None
-
+        smoothing = 0.5
         # label 0에 해당되는 각 feature 성분의 개수값(num_token_0) 초기화
-        num_token_0 = np.zeros((1,X.shape[1]))
+        num_token_0 = np.zeros((1, X.shape[1]))
         # label 1에 해당되는 각 feature 성분의 개수값(num_token_1) 초기화
-        num_token_1 = np.zeros((1,X.shape[1]))
-
+        num_token_1 = np.zeros((1, X.shape[1]))
 
         # 데이터의 num_0,num_1,num_token_0,num_token_1 값 계산
         for i in range(X.shape[0]):
             if (Y[i] == 0):
                 num_0 += 1
-                num_token_0 += None
+                num_token_0 += X.getrow(i)
 
-            if (Y[i] == 1):
-                num_1 += 1
-                num_token_1 += None
+        if (Y[i] == 1):
+            num_1 += 1
+            num_token_1 += X.getrow(i)
 
         # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산
-        self.likelihoods_0 = None
-        self.likelihoods_1 = None
+        self.likelihoods_0 = ((num_token_0 + smoothing) / (num_0 + smoothing))
+        self.likelihoods_1 = ((num_token_1 + smoothing) / (num_1 + smoothing))
 
         # 각 class의 prior를 계산
-        prior_probability_0 = None
-        prior_probability_1 = None
+        prior_probability_0 = (num_0 / (num_0 + num_1))
+        prior_probability_1 = (num_1 / (num_0 + num_1))
 
         # pior의 log값 계
-        self.log_prior_0 = None
-        self.log_prior_1 = None
+        self.log_prior_0 = np.log(self.likelihoods_0 * prior_probability_0)
+        self.log_prior_1 = np.log(self.likelihoods_1 * prior_probability_1)
 
         return None
 
