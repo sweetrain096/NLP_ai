@@ -232,21 +232,23 @@ class Naive_Bayes_Classifier(object):
 
     def train(self, X, Y):
         # label 0에 해당되는 데이터의 개수 값(num_0) 초기화
-        num_0 = 0
+        num_0 = 0 # 부정 문장 개수
         # label 1에 해당되는 데이터의 개수 값(num_1) 초기화
-        num_1 = 0
+        num_1 = 0 # 긍정 문장 개수
 
         # Req 3-1-7. smoothing 조절
         # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
         smoothing = 1e-4
 
         # label 0에 해당되는 각 feature 성분의 개수값(num_token_0) 초기화 
-        num_token_0 = np.zeros((1,X.shape[1]))
+        num_token_0 = np.zeros((1,X.shape[1])) # 세로 하나, 가로 긴 행렬
         # label 1에 해당되는 각 feature 성분의 개수값(num_token_1) 초기화 
         num_token_1 = np.zeros((1,X.shape[1]))
 
 
-        # 데이터의 num_0,num_1,num_token_0,num_token_1 값 계산     
+        # X.shape[0] : 문장 개수
+        # Y[i] : 문장의 긍정, 부정
+        # 데이터의 num_0,num_1,num_token_0,num_token_1 값 계산
         for i in range(X.shape[0]):
             if (Y[i] == 0):
                 num_0 += 1
@@ -258,18 +260,21 @@ class Naive_Bayes_Classifier(object):
         print(num_token_0)
 
         # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산
-        # 단어당 확률?
-        self.likelihoods_0 = None
-        self.likelihoods_1 = None
+        # 0이 되는 경우 방지 smoothing
+        # 단어당 긍정/부정 확률
+        #  / 전체 중 부정 개수
+        self.likelihoods_0 = (num_token_0 + smoothing) / (num_0 + smoothing)
+        self.likelihoods_1 = (num_token_1 + smoothing) / (num_1 + smoothing)
 
         # 각 class의 prior를 계산
-        prior_probability_0 = None
-        prior_probability_1 = None
+        prior_probability_0 = num_0 / (num_0 + num_1)
+        prior_probability_1 = num_1 / (num_0 + num_1)
 
-        # pior의 log값 계
-        self.log_prior_0 = None
-        self.log_prior_1 = None
-
+        # prior의 log값 계
+        self.log_prior_0 = np.log(self.likelihoods_0 / prior_probability_0)
+        self.log_prior_1 = np.log(self.likelihoods_1 / prior_probability_1)
+        print(self.log_prior_0)
+        print(self.log_prior_1)
         return None
     '''
     """
@@ -295,7 +300,7 @@ class Naive_Bayes_Classifier(object):
     테스트를 데이터를 받아 예측된 데이터(predict 함수)와
     테스트 데이터의 label값을 비교하여 정확도를 계산
     """
-
+ 
     def score(self, X_test, Y_test):
 
         return None
