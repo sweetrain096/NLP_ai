@@ -428,7 +428,7 @@ class Logistic_Regression_Classifier(object):
         return result/len(X_test)
 
 # Req 3-4-1. model2에 Logistic_Regression_Classifier 클래스를 사용하여 학습합니다.
-model2 = None
+model2 = Logistic_Regression_Classifier()
 
 # Req 3-4-2. 정확도 측정
 print("Logistic_Regression_Classifier accuracy: {}".format(None))
