@@ -275,6 +275,7 @@ class Naive_Bayes_Classifier(object):
         # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
         smoothing = 0.5
 
+
         # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산
         # likelihood.shape = 1, X.shape[1]
         self.likelihoods_0 = ((num_token_0 + smoothing) / (num_0 + 2 * smoothing))
