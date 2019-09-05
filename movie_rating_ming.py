@@ -170,24 +170,23 @@ class Naive_Bayes_Classifier(object):
 
     def log_likelihoods_naivebayes(self, feature_vector, Class):
         log_likelihood = 0.0
-        # print(feature_vector)
-        # if Class == 0:
-        # for feature_index in range(len(feature_vector)):
-        # print(feature_vector[1][1])
-        # if feature_vector[feature_index] == 1: #feature present
-        #     log_likelihood += None
-        # elif feature_vector[feature_index] == 0: #feature absent
-        #     log_likelihood += None
-        # elif Class == 1:
-        #     for feature_index in range(len(feature_vector)):
-        #         if feature_vector[feature_index] == 1:
-        #             log_likelihood += None
-        #         elif feature_vector[feature_index] == 0:
-        #             log_likelihood += None
 
-        # return None
+        if Class == 0:
+            for feature_index in range(len(feature_vector)):
+                if feature_vector[feature_index] == 1:  # feature present
+                    log_likelihood += None
+                elif feature_vector[feature_index] == 0:  # feature absent
+                    log_likelihood += None
+        elif Class == 1:
+            for feature_index in range(len(feature_vector)):
+                if feature_vector[feature_index] == 1:
+                    log_likelihood += None
+                elif feature_vector[feature_index] == 0:
+                    log_likelihood += None
 
-    '''
+        return None
+
+
     """
     Req 3-1-2.
     class_posteriors():
@@ -199,10 +198,10 @@ class Naive_Bayes_Classifier(object):
         log_likelihood_0 = self.log_likelihoods_naivebayes(feature_vector, Class = 0)
         log_likelihood_1 = self.log_likelihoods_naivebayes(feature_vector, Class = 1)
 
-        log_posterior_0 = log_likelihood_0
-        log_posterior_1 = log_likelihood_1
+        log_posterior_0 = log_likelihood_0 - np.log(0,5)
+        log_posterior_1 = log_likelihood_1 - np.log(0,5)
 
-        return None
+        return (log_posterior_0, log_posterior_1)
 
     """
     Req 3-1-3.
@@ -212,8 +211,14 @@ class Naive_Bayes_Classifier(object):
     """    
 
     def classify(self, feature_vector):
-        return None
-    '''
+        prob_0, prob_1 = self.class_posteriors(feature_vector)
+        if prob_0 >= prob_1:
+            return 0
+        else:
+            return 1
+
+    ​
+
     """
     Req 3-1-4.
     train():
