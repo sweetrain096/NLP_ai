@@ -288,13 +288,12 @@ class Naive_Bayes_Classifier(object):
 
     def predict(self, X_test):
         predictions = []
-        X_test=X_test.toarray()
-        if (len(X_test)==1):
-            predictions.append(None)
+        X_test = X_test.toarray()
+        if (len(X_test) == 1):
+            predictions.append(self.classify(X_test[0]))
         else:
             for case in X_test:
-                predictions.append(None)
-
+                predictions.append(self.classify(case))
         return predictions
 
     """
