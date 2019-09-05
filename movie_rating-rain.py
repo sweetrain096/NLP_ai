@@ -36,8 +36,8 @@ def tokenize(doc):
 """
 
 # train, test 데이터 읽기
-train_data = read_data('ratings_train.txt')[:5]
-test_data = read_data('ratings_test.txt')[:5]
+train_data = read_data('ratings_train.txt')
+test_data = read_data('ratings_test.txt')
 
 
 # Req 1-1-2. 문장 데이터 토큰화
@@ -176,21 +176,24 @@ class Naive_Bayes_Classifier(object):
     
     def log_likelihoods_naivebayes(self, feature_vector, Class):
         log_likelihood = 0.0
-        print(feature_vector)
+        # print(feature_vector)
+        # print(self.log_prior_0)
+        # print(self.log_prior_1)
+        feature_vector = feature_vector[0]
         if Class == 0:
             for feature_index in range(len(feature_vector)):
                 if feature_vector[feature_index] == 1: #feature present
-                    log_likelihood += None
+                    log_likelihood += self.log_prior_0[0, feature_index]
                 elif feature_vector[feature_index] == 0: #feature absent
-                    log_likelihood += None
+                    log_likelihood += 0
         elif Class == 1:
             for feature_index in range(len(feature_vector)):
                 if feature_vector[feature_index] == 1:
-                    log_likelihood += None
+                    log_likelihood += 0
                 elif feature_vector[feature_index] == 0:
-                    log_likelihood += None
+                    log_likelihood += self.log_prior_1[0, feature_index]
                 
-        return None
+        return log_likelihood
 
     """
     Req 3-1-2.
@@ -202,11 +205,11 @@ class Naive_Bayes_Classifier(object):
     def class_posteriors(self, feature_vector):
         log_likelihood_0 = self.log_likelihoods_naivebayes(feature_vector, Class = 0)
         log_likelihood_1 = self.log_likelihoods_naivebayes(feature_vector, Class = 1)
+        # print(log_likelihood_0, log_likelihood_1)
+        log_posterior_0 = log_likelihood_0 - np.log(0.5)
+        log_posterior_1 = log_likelihood_1 - np.log(0.5)
 
-        log_posterior_0 = None
-        log_posterior_1 = None
-
-        return None
+        return log_posterior_0, log_posterior_1
 
     """
     Req 3-1-3.
@@ -216,7 +219,11 @@ class Naive_Bayes_Classifier(object):
     """    
 
     def classify(self, feature_vector):
-        return None
+        p_0, p_1 = self.class_posteriors(feature_vector)
+        if p_0 > p_1:
+            return "부정"
+        else:
+            return "긍정"
 
     """
     Req 3-1-4.
@@ -268,6 +275,7 @@ class Naive_Bayes_Classifier(object):
         # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
         smoothing = 0.5
 
+
         # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산
         # likelihood.shape = 1, X.shape[1]
         self.likelihoods_0 = ((num_token_0 + smoothing) / (num_0 + 2 * smoothing))
@@ -291,12 +299,12 @@ class Naive_Bayes_Classifier(object):
 
     def predict(self, X_test):
         predictions = []
-        X_test=X_test.toarray()
+        X_test = X_test.toarray()
         if (len(X_test)==1):
-            predictions.append(None)
+            predictions.append(self.classify(X_test))
         else:
             for case in X_test:
-                predictions.append(None)
+                predictions.append(self.classify(case))
         
         return predictions
 
@@ -311,8 +319,14 @@ class Naive_Bayes_Classifier(object):
         
         return None
 
-model = Naive_Bayes_Classifier()
-model.train(X, Y)
+# model = Naive_Bayes_Classifier()
+# model.train(X, Y)
+# with open('model_naive_rain.clf', 'wb') as f:
+#    pickle.dump(model, f)
+
+with open('model_naive_rain.clf', 'rb') as f:
+    model = pickle.load(f)
+print(model.predict(X_test.getrow(2)))
 '''
 # Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
 model = None
