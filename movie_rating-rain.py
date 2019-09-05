@@ -288,12 +288,12 @@ class Naive_Bayes_Classifier(object):
 
     def predict(self, X_test):
         predictions = []
-        X_test=X_test.toarray()
+        X_test = X_test.toarray()
         if (len(X_test)==1):
-            predictions.append(None)
+            predictions.append(self.classify(X_test))
         else:
             for case in X_test:
-                predictions.append(None)
+                predictions.append(self.classify(case))
         
         return predictions
 
@@ -310,6 +310,7 @@ class Naive_Bayes_Classifier(object):
 
 model = Naive_Bayes_Classifier()
 model.train(X, Y)
+print(model.predict(X_test.getrow(2)))
 '''
 # Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
 model = None
