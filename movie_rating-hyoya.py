@@ -220,7 +220,11 @@ class Naive_Bayes_Classifier(object):
     """
 
     def classify(self, feature_vector):
-        return None
+        prob_0, prob_1 = self.class_posteriors(feature_vector)
+        if prob_0 >= prob_1:
+            return 0
+        else:
+            return 1
 
     """
     Req 3-1-4.
