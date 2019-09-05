@@ -404,10 +404,10 @@ class Logistic_Regression_Classifier(object):
         predictions = []
         X_test=X_test.toarray()
         if (len(X_test)==1):
-            predictions.append(None)
+            predictions.append(self.classify(X_test))
         else:
             for case in X_test:
-                predictions.append(None)
+                predictions.append(self.classify(case))
 
         return predictions
 
