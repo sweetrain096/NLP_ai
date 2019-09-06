@@ -1,39 +1,35 @@
 import numpy as np
 import pickle
+from model import Model
 
 from konlpy.tag import Okt
 from scipy.sparse import lil_matrix
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 
 """
 Req 1-1-1. 데이터 읽기
 read_data(): 데이터를 읽어서 저장하는 함수
 """
 
-def read_data(filename):
-    f = open(filename, "r", encoding="UTF8")
-    data = []
-    for line in f:
-        line = line[:-1]
-        data.append(line.split("\t"))
 
-    return np.array(data[1:])
+def read_data(filename):
+    with open(filename, 'r', encoding='utf-8') as f:
+        datas = [line.split('\t') for line in f.read().splitlines()]
+        datas = datas[1:]
+    return datas
 
 """
 Req 1-1-2. 토큰화 함수
 tokenize(): 텍스트 데이터를 받아 KoNLPy의 okt 형태소 분석기로 토크나이징
 """
+okt = Okt()
+
 
 def tokenize(doc):
-    okt = Okt()
-    tokens = []
-    for token in doc:
-        comment = []
-        for pos in okt.pos(token[0]):
-            comment.append(pos[0] + '/' + pos[1])
-        tokens.append([comment, int(token[1])])
-    return tokens
+    tt = okt.pos(doc, norm=True, stem=True)
+    return ['/'.join(t) for t in tt]
 
 """
 데이터 전 처리
@@ -46,24 +42,34 @@ test_data = read_data('ratings_test.txt')
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
-train_docs = tokenize(train_data[:, 1:])
-test_docs = tokenize(test_data[:, 1:])
 
+
+train_docs = [(tokenize(i[1]), i[2]) for i in train_data]
+test_docs = [(tokenize(i[1]), i[2]) for i in test_data]
 
 # Req 1-1-3. word_indices 초기화
 word_indices = {}
 
 # Req 1-1-3. word_indices 채우기
-for n_data in train_docs + test_docs:
+# 기존
+# for n_data in train_docs:
+#     # 품사까지 dict화
+#     for cnt in n_data[0]:
+#         if not (word_indices.get(cnt)):
+#             word_indices[cnt] = len(word_indices) + 1
+# [index, 부정, 긍정]
+for n_data in train_docs:
     # 품사까지 dict화
     for cnt in n_data[0]:
         if not (word_indices.get(cnt)):
             word_indices[cnt] = len(word_indices) + 1
+
+
     # 문자만 dict화
     # n_data = n_data.split('/')[0]
     # if not (word_indices.get(n_data)):
     #     word_indices[n_data] = len(word_indices) + 1
-# print(word_indices)
+print(word_indices)
 
 # Req 1-1-4. sparse matrix(희소행렬 = 거의 0으로 채워지고 몇개의 값만 값이 존재) 초기화
 # X: train feature data
@@ -83,21 +89,21 @@ Y_test = np.zeros(((len(test_data))))
 for n in range(len(train_docs)):
     for token in train_docs[n][0]:
         indices = word_indices.get(token)
-        if not indices:
+        if indices:
             X[n, indices] = 1
     Y[n] = train_docs[n][1]
 
 for n in range(len(test_docs)):
     for token in test_docs[n][0]:
         indices = word_indices.get(token)
-        if not indices:
+        if indices:
             X_test[n, indices] = 1
     Y_test[n] = test_docs[n][1]
-
+'''
 """
 트레이닝 파트
-clf  <- Naive bayes model
-clf2 <- Logistic regression model
+clf  <- Naive baysian mdoel
+clf2 <- Logistic regresion model
 """
 
 # Req 1-2-1. Naive bayes model 학습
@@ -108,26 +114,41 @@ clf.fit(X, Y)
 clf2 = LogisticRegression()
 clf2.fit(X, Y)
 
+# Req 2-3-3. 새로운 학습 모델 사용
+knn = KNeighborsClassifier(n_neighbors=2)
+knn.fit(X, Y)
+
+
 """
 테스트 파트
 """
+
 # Req 1-3-1. 문장 데이터에 따른 예측된 분류값 출력
 print("Naive bayesian classifier example result: {}, {}".format(test_data[3][1], clf.predict(X_test[3])))
 print("Logistic regression exampleresult: {}, {}".format(test_data[3][1], clf2.predict(X_test[3])))
+print("K Neighbors classifier example result: {}, {}".format(test_data[3][1], knn.predict(X_test[3])))
 
 # Req 1-3-2. 정확도 출력
 print("Naive bayesian classifier accuracy: {}".format(clf.score(X_test, Y_test)))
 print("Logistic regression accuracy: {}".format(clf2.score(X_test, Y_test)))
+print("K Neighbors classifier accuracy: {}".format(knn.score(X_test, Y_test)))
+
 
 """
 데이터 저장 파트
 """
 
 # Req 1-4. pickle로 학습된 모델 데이터 저장
-with open("model_naive.clf", "wb") as f:
-    pickle.dump(clf, f)
-with open("model_logistic.clf", "wb") as f:
-    pickle.dump(clf2, f)
+
+model = Model()
+
+model.set_naive_model(clf)
+model.set_logistic_model(clf2)
+model.set_k_neighbors_model(knn)
+model.set_word_indices(word_indices)
+
+with open('model_add_knn.clf', 'wb') as f:
+   pickle.dump(model, f)
 '''
 # Naive bayes classifier algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
@@ -137,7 +158,15 @@ Naive_Bayes_Classifier 알고리즘 클래스입니다.
 """
 
 class Naive_Bayes_Classifier(object):
-
+    # def __init__(self):
+    #     self.word_probs = []
+    #
+    # def word_probabilities(self, counts, total_class0, total_class1, k):
+    #     # 단어의 빈도수를 [단어, p(w|부정), p(w|긍정)] 형태로 반환
+    #     return [(w,
+    #              (class0 + k) / (total_class0 + 2 * k),
+    #              (class1 + k) / (total_class1 + 2 * k))
+    #             for w, [index, class0, class1] in counts.items()]
     """
     Req 3-1-1.
     log_likelihoods_naivebayes():
@@ -147,21 +176,20 @@ class Naive_Bayes_Classifier(object):
     
     def log_likelihoods_naivebayes(self, feature_vector, Class):
         log_likelihood = 0.0
-
+        # feature_vector = feature_vector[0]
         if Class == 0:
             for feature_index in range(len(feature_vector)):
                 if feature_vector[feature_index] == 1: #feature present
-                    log_likelihood += None
+                    log_likelihood += self.log_prior_0[0, feature_index]
                 elif feature_vector[feature_index] == 0: #feature absent
-                    log_likelihood += None
+                    log_likelihood += 0
         elif Class == 1:
             for feature_index in range(len(feature_vector)):
                 if feature_vector[feature_index] == 1:
-                    log_likelihood += None
+                    log_likelihood += self.log_prior_1[0, feature_index]
                 elif feature_vector[feature_index] == 0:
-                    log_likelihood += None
-                
-        return None
+                    log_likelihood += 0
+        return log_likelihood
 
     """
     Req 3-1-2.
@@ -173,11 +201,11 @@ class Naive_Bayes_Classifier(object):
     def class_posteriors(self, feature_vector):
         log_likelihood_0 = self.log_likelihoods_naivebayes(feature_vector, Class = 0)
         log_likelihood_1 = self.log_likelihoods_naivebayes(feature_vector, Class = 1)
+        # print(log_likelihood_0, log_likelihood_1)
+        log_posterior_0 = log_likelihood_0 - np.log(0.5)
+        log_posterior_1 = log_likelihood_1 - np.log(0.5)
 
-        log_posterior_0 = None
-        log_posterior_1 = None
-
-        return None
+        return log_posterior_0, log_posterior_1
 
     """
     Req 3-1-3.
@@ -187,7 +215,12 @@ class Naive_Bayes_Classifier(object):
     """    
 
     def classify(self, feature_vector):
-        return None
+        p_0, p_1 = self.class_posteriors(feature_vector)
+        # print(p_0, p_1)
+        if p_0 > p_1:
+            return 0
+        else:
+            return 1
 
     """
     Req 3-1-4.
@@ -208,40 +241,40 @@ class Naive_Bayes_Classifier(object):
     def train(self, X, Y):
         # label 0에 해당되는 데이터의 개수 값(num_0) 초기화
         num_0 = 0
-        # label 1에 해당되는 데이터의 개수 값(num_1) 초기화
+
         num_1 = 0
 
-        # Req 3-1-7. smoothing 조절
-        # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
-        smoothing = None
-
-        # label 0에 해당되는 각 feature 성분의 개수값(num_token_0) 초기화 
-        num_token_0 = np.zeros((1,X.shape[1]))
+        # label 0에 해당되는 각 feature 성분의 개수값(num_token_0) 초기화
+        num_token_0 = np.zeros((1, X.shape[1]))
         # label 1에 해당되는 각 feature 성분의 개수값(num_token_1) 초기화 
-        num_token_1 = np.zeros((1,X.shape[1]))
+        num_token_1 = np.zeros((1, X.shape[1]))
 
-        
         # 데이터의 num_0,num_1,num_token_0,num_token_1 값 계산     
         for i in range(X.shape[0]):
             if (Y[i] == 0):
                 num_0 += 1
-                num_token_0 += None
-        
+                num_token_0 += X.getrow(i)
+
             if (Y[i] == 1):
                 num_1 += 1
-                num_token_1 += None
+                num_token_1 += X.getrow(i)
 
-        # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산        
-        self.likelihoods_0 = None
-        self.likelihoods_1 = None
+        # Req 3-1-7. smoothing 조절
+        # likelihood 확률이 0값을 갖는것을 피하기 위하여 smoothing 값 적용
+        smoothing = 0.5
+
+        # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산
+        # likelihood.shape = 1, X.shape[1]
+        self.likelihoods_0 = ((num_token_0 + smoothing) / (num_0 + smoothing))
+        self.likelihoods_1 = ((num_token_1 + smoothing) / (num_1 + smoothing))
 
         # 각 class의 prior를 계산
-        prior_probability_0 = None
-        prior_probability_1 = None
+        prior_probability_0 = num_0 / (num_0 + num_1)
+        prior_probability_1 = num_1 / (num_0 + num_1)
 
-        # pior의 log값 계
-        self.log_prior_0 = None
-        self.log_prior_1 = None
+        # prior의 log값 계
+        self.log_prior_0 = np.log(self.likelihoods_0 * prior_probability_0)
+        self.log_prior_1 = np.log(self.likelihoods_1 * prior_probability_1)
 
         return None
 
@@ -253,13 +286,13 @@ class Naive_Bayes_Classifier(object):
 
     def predict(self, X_test):
         predictions = []
-        X_test=X_test.toarray()
+        X_test = X_test.toarray()
         if (len(X_test)==1):
-            predictions.append(None)
+            predictions.append(self.classify(X_test))
         else:
             for case in X_test:
-                predictions.append(None)
-        
+                predictions.append(self.classify(case))
+        print("predict", predictions)
         return predictions
 
     """
@@ -270,18 +303,36 @@ class Naive_Bayes_Classifier(object):
     """
     
     def score(self, X_test, Y_test):
-        
-        return None
+        same = 0
+        diff = 0
+        pred_X = self.predict(X_test)
+        for _ in range(len(pred_X)):
+            if pred_X[_] == Y_test[_]:
+                same += 1
+            else:
+                diff += 1
+
+        return same / len(pred_X)
+
+
+
+# with open('model_naive_rain.clf', 'rb') as f:
+#     model = pickle.load(f)
+
 
 # Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
-model = None
+model = Naive_Bayes_Classifier()
+model.train(X, Y)
+with open('model_naive_rain.clf', 'wb') as f:
+   pickle.dump(model, f)
 
 # Req 3-2-2. 정확도 측정
-print("Naive_Bayes_Classifier accuracy: {}".format(None))
+print("Naive_Bayes_Classifier accuracy: {}".format(model.score(X_test, Y_test)))
+
 
 # Logistic regression algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
-
+'''
 """
 Logistic_Regression_Classifier 알고리즘 클래스입니다.
 """
