@@ -431,12 +431,15 @@ class Logistic_Regression_Classifier(object):
     """
 
     def score(self, X_test, Y_test):
-
-        return None
+        result = 0
+        X_p = self.predict(X_test)
+        for i in range(len(X_p)):
+            if X_p[i] == Y_test[i]:
+                result += 1
+        return result / len(X_p)
 
 # Req 3-4-1. model2에 Logistic_Regression_Classifier 클래스를 사용하여 학습합니다.
-model2 = None
-
+model2 = Logistic_Regression_Classifier()
+model2.train(X, Y)
 # Req 3-4-2. 정확도 측정
-print("Logistic_Regression_Classifier accuracy: {}".format(None))
-
+print("Logistic_Regression_Classifier accuracy: {}".format(model2.score(X_test, Y_test)))
