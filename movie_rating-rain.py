@@ -177,6 +177,7 @@ class Naive_Bayes_Classifier(object):
     def log_likelihoods_naivebayes(self, feature_vector, Class):
         log_likelihood = 0.0
         # feature_vector = feature_vector[0]
+
         if Class == 0:
             for feature_index in range(len(feature_vector)):
                 if feature_vector[feature_index] == 1: #feature present
@@ -268,6 +269,7 @@ class Naive_Bayes_Classifier(object):
         self.likelihoods_0 = ((num_token_0 + smoothing) / (num_0 + smoothing))
         self.likelihoods_1 = ((num_token_1 + smoothing) / (num_1 + smoothing))
 
+
         # 각 class의 prior를 계산
         prior_probability_0 = num_0 / (num_0 + num_1)
         prior_probability_1 = num_1 / (num_0 + num_1)
@@ -293,6 +295,7 @@ class Naive_Bayes_Classifier(object):
             for case in X_test:
                 predictions.append(self.classify(case))
         print("predict", predictions)
+
         return predictions
 
     """
@@ -319,12 +322,12 @@ class Naive_Bayes_Classifier(object):
 # with open('model_naive_rain.clf', 'rb') as f:
 #     model = pickle.load(f)
 
-
 # Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
 model = Naive_Bayes_Classifier()
 model.train(X, Y)
 with open('model_naive_rain.clf', 'wb') as f:
    pickle.dump(model, f)
+
 
 # Req 3-2-2. 정확도 측정
 print("Naive_Bayes_Classifier accuracy: {}".format(model.score(X_test, Y_test)))
