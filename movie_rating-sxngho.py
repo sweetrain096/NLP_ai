@@ -310,7 +310,7 @@ print("Naive_Bayes_Classifier accuracy: {}".format(nbc.score(X_test, Y_test)))
 
 # Logistic regression algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
-'''
+
 """
 Logistic_Regression_Classifier 알고리즘 클래스입니다.
 """
@@ -322,9 +322,9 @@ class Logistic_Regression_Classifier(object):
     sigmoid():
     인풋값의 sigmoid 함수 값을 리턴
     """
-    def sigmoid(self,z):
 
-        return None
+    def sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
 
     """
     Req 3-3-2.
@@ -337,8 +337,8 @@ class Logistic_Regression_Classifier(object):
 
     def prediction(self, beta_x, beta_c, X):
         # 예측 확률 P(class=1)을 계산하는 식을 만든다.
-
-        return None
+        equation = X @ beta_x.T + beta_c
+        return equation.reshape(-1, 1)
 
     """
     Req 3-3-3.
@@ -348,10 +348,9 @@ class Logistic_Regression_Classifier(object):
 
     def gradient_beta(self, X, error, lr):
         # beta_x를 업데이트하는 규칙을 정의한다.
-        beta_x_delta = None
+        beta_x_delta = lr / X.shape[1] * np.sum(X * np.sum(error), axis=0)
         # beta_c를 업데이트하는 규칙을 정의한다.
-        beta_c_delta = None
-
+        beta_c_delta = lr / X.shape[1] * np.sum(error, axis=0)
         return beta_x_delta, beta_c_delta
 
     """
@@ -442,4 +441,3 @@ model2 = None
 # Req 3-4-2. 정확도 측정
 print("Logistic_Regression_Classifier accuracy: {}".format(None))
 
-'''
