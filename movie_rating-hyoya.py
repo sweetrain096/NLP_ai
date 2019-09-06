@@ -481,17 +481,19 @@ class Logistic_Regression_Classifier(object):
     테스트를 데이터를 받아 예측된 데이터(predict 함수)와
     테스트 데이터의 label값을 비교하여 정확도를 계산
     """
-    
-    def score(self, X_test, Y_test):
 
-        return None
+    def score(self, X_test, Y_test):
+        result = 0
+        X_p = self.predict(X_test)
+        for i in range(len(X_p)):
+            if X_p[i] == Y_test[i]:
+                result += 1
+        return result / len(X_p)
+
 
 # Req 3-4-1. model2에 Logistic_Regression_Classifier 클래스를 사용하여 학습합니다.
-model2 = Logistic_Regression_Classifier().train(X,Y);
-
+model2 = Logistic_Regression_Classifier()
+model2.train(X, Y)
 
 # Req 3-4-2. 정확도 측정
 print("Logistic_Regression_Classifier accuracy: {}".format(model2.score(X_test, Y_test)))
-
-#########################################################################
-#########################################################################
