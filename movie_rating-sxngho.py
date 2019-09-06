@@ -310,7 +310,7 @@ print("Naive_Bayes_Classifier accuracy: {}".format(nbc.score(X_test, Y_test)))
 
 # Logistic regression algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
-'''
+
 """
 Logistic_Regression_Classifier 알고리즘 클래스입니다.
 """
@@ -322,9 +322,9 @@ class Logistic_Regression_Classifier(object):
     sigmoid():
     인풋값의 sigmoid 함수 값을 리턴
     """
-    def sigmoid(self,z):
 
-        return None
+    def sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
 
     """
     Req 3-3-2.
@@ -337,8 +337,8 @@ class Logistic_Regression_Classifier(object):
 
     def prediction(self, beta_x, beta_c, X):
         # 예측 확률 P(class=1)을 계산하는 식을 만든다.
-
-        return None
+        equation = X @ beta_x.T + beta_c
+        return equation.reshape(-1, 1)
 
     """
     Req 3-3-3.
@@ -348,10 +348,9 @@ class Logistic_Regression_Classifier(object):
 
     def gradient_beta(self, X, error, lr):
         # beta_x를 업데이트하는 규칙을 정의한다.
-        beta_x_delta = None
+        beta_x_delta = lr / X.shape[1] * np.sum(X * np.sum(error), axis=0)
         # beta_c를 업데이트하는 규칙을 정의한다.
-        beta_c_delta = None
-
+        beta_c_delta = lr / X.shape[1] * np.sum(error, axis=0)
         return beta_x_delta, beta_c_delta
 
     """
@@ -373,29 +372,25 @@ class Logistic_Regression_Classifier(object):
     def train(self, X, Y):
         # Req 3-3-8. learning rate 조절
         # 학습률(learning rate)를 설정한다.(권장: 1e-3 ~ 1e-6)
-        lr = 1e-2
+        lr = 1e-3
         # 반복 횟수(iteration)를 설정한다.(자연수)
         iters = 200
-
         # beta_x, beta_c값을 업데이트 하기 위하여 beta_x_i, beta_c_i값을 초기화
-        beta_x_i = None
-        beta_c_i = None
-
-        #행렬 계산을 위하여 Y데이터의 사이즈를 (len(Y),1)로 저장합니다.
-        Y=None
-
+        beta_x_i = np.zeros((1, X.shape[1]))
+        beta_c_i = 0
+        # 행렬 계산을 위하여 Y데이터의 사이즈를 (len(Y),1)로 저장합니다.
+        Y = Y.reshape((len(Y), 1))
         for i in range(iters):
-            #실제 값 Y와 예측 값의 차이를 계산하여 error를 정의합니다.
-            error = None
-            #gredient_beta함수를 통하여 델타값들을 업데이트 합니다.
-            beta_x_delta, beta_c_delta = self.gradient_beta(None)
-            beta_x_i -= beta_x_delta.T
+            # 실제 값 Y와 예측 값의 차이를 계산하여 error를 정의합니다.
+            pred = self.prediction(beta_x_i, beta_c_i, X)
+            error = pred - Y
+            # gredient_beta함수를 통하여 델타값들을 업데이트 합니다.
+            beta_x_delta, beta_c_delta = self.gradient_beta(X, error, lr)
+            beta_x_i -= beta_x_delta
             beta_c_i -= beta_c_delta
-
         self.beta_x = beta_x_i
         self.beta_c = beta_c_i
-
-        return None
+        return self.beta_x, self.beta_c
 
     """
     Req 3-3-5.
@@ -404,8 +399,12 @@ class Logistic_Regression_Classifier(object):
     """
 
     def classify(self, X_test):
-
-        return None
+        result = 0
+        # X_test = X_test.toarray()
+        for i in range(len(X_test)):
+            if X_test[i] > 0.5:
+                result = 1
+        return result
 
     """
     Req 3-3-6.
@@ -415,13 +414,12 @@ class Logistic_Regression_Classifier(object):
 
     def predict(self, X_test):
         predictions = []
-        X_test=X_test.toarray()
-        if (len(X_test)==1):
-            predictions.append(None)
+        X_test = X_test.toarray()
+        if (len(X_test) == 1):
+            predictions.append(self.classify(X_test))
         else:
             for case in X_test:
-                predictions.append(None)
-
+                predictions.append(self.classify(case))
         return predictions
 
 
@@ -433,13 +431,15 @@ class Logistic_Regression_Classifier(object):
     """
 
     def score(self, X_test, Y_test):
-
-        return None
+        result = 0
+        X_p = self.predict(X_test)
+        for i in range(len(X_p)):
+            if X_p[i] == Y_test[i]:
+                result += 1
+        return result / len(X_p)
 
 # Req 3-4-1. model2에 Logistic_Regression_Classifier 클래스를 사용하여 학습합니다.
-model2 = None
-
+model2 = Logistic_Regression_Classifier()
+model2.train(X, Y)
 # Req 3-4-2. 정확도 측정
-print("Logistic_Regression_Classifier accuracy: {}".format(None))
-
-'''
+print("Logistic_Regression_Classifier accuracy: {}".format(model2.score(X_test, Y_test)))
