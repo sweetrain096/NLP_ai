@@ -399,8 +399,12 @@ class Logistic_Regression_Classifier(object):
     """
 
     def classify(self, X_test):
-
-        return None
+        result = 0
+        # X_test = X_test.toarray()
+        for i in range(len(X_test)):
+            if X_test[i] > 0.5:
+                result = 1
+        return result
 
     """
     Req 3-3-6.
