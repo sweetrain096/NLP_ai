@@ -319,10 +319,11 @@ class Naive_Bayes_Classifier(object):
                 same += 1
 
         return same / len(X_pred)
-'''
-# Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
-model = None
 
+# Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
+model = Naive_Bayes_Classifier()
+model.train(X, Y)
+'''
 # Req 3-2-2. 정확도 측정
 print("Naive_Bayes_Classifier accuracy: {}".format(None))
 
@@ -463,7 +464,5 @@ print("Logistic_Regression_Classifier accuracy: {}".format(None))
 
 '''
 
-model = Naive_Bayes_Classifier()
-model.train(X, Y)
 print(model.predict(X_test))
 
