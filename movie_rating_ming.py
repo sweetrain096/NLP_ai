@@ -39,8 +39,8 @@ def tokenize(doc):
 """
 
 # train, test 데이터 읽기
-train_data = read_data('ratings_train.txt')[:3]
-test_data = read_data('ratings_test.txt')[:3]
+train_data = read_data('ratings_train.txt')[:70]
+test_data = read_data('ratings_test.txt')[:70]
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
@@ -323,10 +323,10 @@ class Naive_Bayes_Classifier(object):
 # Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
 model = Naive_Bayes_Classifier()
 model.train(X, Y)
-'''
-# Req 3-2-2. 정확도 측정
-print("Naive_Bayes_Classifier accuracy: {}".format(None))
 
+# Req 3-2-2. 정확도 측정
+print("Naive_Bayes_Classifier accuracy: {}".format(model.score(X_test, Y_test)))
+'''
 # Logistic regression algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
 
@@ -463,6 +463,4 @@ print("Logistic_Regression_Classifier accuracy: {}".format(None))
 
 
 '''
-
-print(model.predict(X_test))
 
