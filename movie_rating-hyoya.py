@@ -462,15 +462,15 @@ class Logistic_Regression_Classifier(object):
     predict():
     테스트 데이터에 대해서 예측 label값을 출력해주는 함수
     """
-    
+
     def predict(self, X_test):
         predictions = []
-        X_test=X_test.toarray()
-        if (len(X_test)==1):
-            predictions.append(None)
+        X_test = X_test.toarray()
+        if (len(X_test) == 1):
+            predictions.append(self.classify(X_test))
         else:
             for case in X_test:
-                predictions.append(None)
+                predictions.append(self.classify(case))
 
         return predictions
 
