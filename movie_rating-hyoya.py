@@ -413,33 +413,33 @@ class Logistic_Regression_Classifier(object):
     4) 최적화 된 가중치 값들 리턴
        self.beta_x, self.beta_c
     """
-    
+
     def train(self, X, Y):
         # Req 3-3-8. learning rate 조절
         # 학습률(learning rate)를 설정한다.(권장: 1e-3 ~ 1e-6)
-        lr = 1e-2
+        lr = 1e-3
         # 반복 횟수(iteration)를 설정한다.(자연수)
         iters = 200
-        
+
         # beta_x, beta_c값을 업데이트 하기 위하여 beta_x_i, beta_c_i값을 초기화
-        beta_x_i = np.zeros((150000, 49896))
-        beta_c_i = np.zeros((150000, 49896))
-    
-        #행렬 계산을 위하여 Y데이터의 사이즈를 (len(Y),1)로 저장합니다.
-        Y=np.resize(len(Y),1)
-    
+        beta_x_i = np.zeros((1, X.shape[1]))
+        beta_c_i = 0
+
+        # 행렬 계산을 위하여 Y데이터의 사이즈를 (len(Y),1)로 저장합니다.
+        Y = Y.reshape((len(Y), 1))
+
         for i in range(iters):
-            #실제 값 Y와 예측 값의 차이를 계산하여 error를 정의합니다.
+            # 실제 값 Y와 예측 값의 차이를 계산하여 error를 정의합니다.
             pred = self.prediction(beta_x_i, beta_c_i, X)
             error = pred - Y
-            #gredient_beta함수를 통하여 델타값들을 업데이트 합니다.
-            beta_x_delta, beta_c_delta = self. gradient_beta(X,error,lr, beta_c_i)
-            beta_x_i -= beta_x_delta.T
+            # gredient_beta함수를 통하여 델타값들을 업데이트 합니다.
+            beta_x_delta, beta_c_delta = self.gradient_beta(X, error, lr)
+            beta_x_i -= beta_x_delta
             beta_c_i -= beta_c_delta
-            
+
         self.beta_x = beta_x_i
         self.beta_c = beta_c_i
-        
+
         return self.beta_x, self.beta_c
 
     """  
