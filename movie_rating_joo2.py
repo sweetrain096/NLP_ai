@@ -36,8 +36,8 @@ def tokenize(doc):
 """
 
 # train, test 데이터 읽기
-train_data = read_data('ratings_train.txt')
-test_data = read_data('ratings_test.txt')
+train_data = read_data('ratings_train.txt')[:70]
+test_data = read_data('ratings_test.txt')[:70]
 
 
 # Req 1-1-2. 문장 데이터 토큰화
@@ -103,6 +103,7 @@ clf2 <- Logistic regresion model
 clf = MultinomialNB()
 clf.fit(X, Y)
 
+
 # Req 1-2-2. Logistic regression model 학습
 clf2 = LogisticRegression()
 clf2.fit(X, Y)
@@ -133,15 +134,15 @@ print("K Neighbors classifier accuracy: {}".format(knn.score(X_test, Y_test)))
 
 # Req 1-4. pickle로 학습된 모델 데이터 저장
 
-model = Model()
-
-model.set_naive_model(clf)
-model.set_logistic_model(clf2)
-model.set_k_neighbors_model(knn)
-model.set_word_indices(word_indices)
-
-with open('model_add_knn.clf', 'wb') as f:
-   pickle.dump(model, f)
+# model = Model()
+#
+# model.set_naive_model(clf)
+# model.set_logistic_model(clf2)
+# model.set_k_neighbors_model(knn)
+# model.set_word_indices(word_indices)
+#
+# with open('model_add_knn.clf', 'wb') as f:
+#    pickle.dump(model, f)
 
 # Naive bayes classifier algorithm part
 # 아래의 코드는 심화 과정이기에 사용하지 않는다면 주석 처리하고 실행합니다.
@@ -259,7 +260,7 @@ class Naive_Bayes_Classifier(object):
         # pior의 log값 계
         self.log_prior_0 = np.log(self.likelihoods_0 * prior_probability_0)
         self.log_prior_1 = np.log(self.likelihoods_1 * prior_probability_1)
-        return None
+        return "Naive bayesian classifier(smoothing = {}, prior_probability_0 = {}, prior_probability_1 = {})".format(smoothing, prior_probability_0, prior_probability_1)
 
     """
     Req 3-1-5.
@@ -286,13 +287,10 @@ class Naive_Bayes_Classifier(object):
     
     def score(self, X_test, Y_test):
         same = 0
-        diff = 0
         pred_X = self.predict(X_test)
         for _ in range(len(pred_X)):
             if pred_X[_] == Y_test[_]:
                 same += 1
-            else:
-                diff += 1
 
         return same / len(pred_X)
 
