@@ -14,8 +14,8 @@ from scipy.sparse import lil_matrix
 # slack 연동 정보 입력 부분
 SLACK_TOKEN = os.getenv('SLACK_TOKEN')
 SLACK_SIGNING_SECRET = os.getenv('SLACK_SIGNING_SECRET')
-# SLACK_TOKEN = 'xoxb-507382705603-731558944624-2AnM7unjWKiirrXnWIV0kXOX'
-# SLACK_SIGNING_SECRET = 'c54cf581168e2786fa22dd60dc7b7b45'
+
+return_text = ""
 
 app = Flask(__name__)
 
