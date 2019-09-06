@@ -39,8 +39,8 @@ def tokenize(doc):
 """
 
 # train, test 데이터 읽기
-train_data = read_data('ratings_train.txt')[:70]
-test_data = read_data('ratings_test.txt')[:70]
+train_data = read_data('ratings_train.txt')
+test_data = read_data('ratings_test.txt')
 
 # Req 1-1-2. 문장 데이터 토큰화
 # train_docs, test_docs : 토큰화된 트레이닝, 테스트  문장에 label 정보를 추가한 list
@@ -48,7 +48,7 @@ test_data = read_data('ratings_test.txt')[:70]
 
 train_docs = [(tokenize(i[1]), i[2]) for i in train_data]
 test_docs = [(tokenize(i[1]), i[2]) for i in test_data]
-print('train_docs', train_docs)
+# print('train_docs', train_docs)
 
 # Req 1-1-3. word_indices 초기화
 word_indices = {}
@@ -185,7 +185,7 @@ class Naive_Bayes_Classifier(object):
                     log_likelihood += self.log_prior_1[0, feature_index]
                 elif feature_vector[feature_index] == 0:
                     log_likelihood += 0
-        print(log_likelihood)
+        # print(log_likelihood)
         return log_likelihood
 
 
@@ -203,7 +203,7 @@ class Naive_Bayes_Classifier(object):
 
         log_posterior_0 = log_likelihood_0 - np.log(0.5)
         log_posterior_1 = log_likelihood_1 - np.log(0.5)
-        print(log_posterior_0)
+        # print(log_posterior_0)
 
         return (log_posterior_0, log_posterior_1)
 
@@ -282,8 +282,8 @@ class Naive_Bayes_Classifier(object):
         # prior의 log값 계
         self.log_prior_0 = np.log(self.likelihoods_0 * prior_probability_0)
         self.log_prior_1 = np.log(self.likelihoods_1 * prior_probability_1)
-        print(self.log_prior_0)
-        print(self.log_prior_1)
+        # print(self.log_prior_0)
+        # print(self.log_prior_1)
         return None
 
     """
