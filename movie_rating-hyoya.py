@@ -8,7 +8,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 
-
+'''
 """
 Req 1-1-1. 데이터 읽기
 read_data(): 데이터를 읽어서 저장하는 함수
@@ -330,8 +330,10 @@ print("Naive_Bayes_Classifier accuracy: {}".format(nbc.score(X_test, Y_test)))
 
 #########################################################################
 #########################################################################
-
 '''
+
+
+
 """
 Logistic_Regression_Classifier 알고리즘 클래스입니다.
 """
@@ -378,23 +380,22 @@ class Logistic_Regression_Classifier(object):
     """
 
     def prediction(self, beta_x, beta_c, X):
-        # z = X * beta_x.T, beta_c
-        # return self.sigmoid(z)
-        tmp = np.dot(X, np.transpose(beta_x,)) + beta_c
-        return self.sigmoid(tmp)
+        # 예측 확률 P(class=1)을 계산하는 식을 만든다.
+        equation = X @ beta_x.T + beta_c
+        return equation.reshape(-1, 1)
 
     """
     Req 3-3-3.
     gradient_beta():
     beta값에 해당되는 gradient값을 계산하고 learning rate를 곱하여 출력.
     """
-    
+
     def gradient_beta(self, X, error, lr):
         # beta_x를 업데이트하는 규칙을 정의한다.
-        beta_x_delta = lr/len(X) * np,sum(X * ( error ), axis=0 )
+        beta_x_delta = lr / X.shape[1] * np.sum(X * np.sum(error), axis=0)
         # beta_c를 업데이트하는 규칙을 정의한다.
-        beta_c_delta = lr/len(X) * np.sum(error, axis=0)
-    
+        beta_c_delta = lr / X.shape[1] * np.sum(error, axis=0)
+
         return beta_x_delta, beta_c_delta
 
     """
@@ -421,15 +422,15 @@ class Logistic_Regression_Classifier(object):
         iters = 200
         
         # beta_x, beta_c값을 업데이트 하기 위하여 beta_x_i, beta_c_i값을 초기화
-        beta_x_i = 1
-        beta_c_i = 0
+        beta_x_i = np.zeros((150000, 49896))
+        beta_c_i = np.zeros((150000, 49896))
     
         #행렬 계산을 위하여 Y데이터의 사이즈를 (len(Y),1)로 저장합니다.
         Y=np.resize(len(Y),1)
     
         for i in range(iters):
             #실제 값 Y와 예측 값의 차이를 계산하여 error를 정의합니다.
-            pred = self.prediction(X, beta_x_i, beta_c_i)
+            pred = self.prediction(beta_x_i, beta_c_i, X)
             error = pred - Y
             #gredient_beta함수를 통하여 델타값들을 업데이트 합니다.
             beta_x_delta, beta_c_delta = self. gradient_beta(X,error,lr, beta_c_i)
@@ -441,7 +442,7 @@ class Logistic_Regression_Classifier(object):
         
         return self.beta_x, self.beta_c
 
-    """
+    """  
     Req 3-3-5.
     classify():
     확률값을 0.5 기준으로 큰 값은 1, 작은 값은 0으로 리턴
@@ -489,4 +490,3 @@ print("Logistic_Regression_Classifier accuracy: {}".format(model2.score(X_test, 
 
 #########################################################################
 #########################################################################
-'''
