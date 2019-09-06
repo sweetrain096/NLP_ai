@@ -162,29 +162,31 @@ class Naive_Bayes_Classifier(object):
     feature 데이터를 받아 label(class)값에 해당되는 likelihood 값들을
     naive한 방식으로 구하고 그 값의 log값을 리턴
     input :
-    feature_vector : 단어 사전 크기를 갖는 벡터
-    one-hot : 임베딩을 사용했기에 0 or 1 성분 값을 가짐
-    class : label 값인 0 or 1
-    output : class에 해당되는 likelihood 확률의 로그 값
+    * feature_vector : 단어 사전 크기를 갖는 벡터
+    * one-hot : 임베딩을 사용했기에 0 or 1 성분 값을 가짐
+    * class : label 값인 0 or 1
+    output :
+    * class에 해당되는 likelihood 확률의 로그 값
     """
 
     def log_likelihoods_naivebayes(self, feature_vector, Class):
         log_likelihood = 0.0
-
+        # print(feature_vector)
         if Class == 0:
             for feature_index in range(len(feature_vector)):
+                # print(feature_vector)
                 if feature_vector[feature_index] == 1:  # feature present
-                    log_likelihood += None
+                    log_likelihood += self.log_prior_0[0, feature_index]
                 elif feature_vector[feature_index] == 0:  # feature absent
-                    log_likelihood += None
+                    log_likelihood += 0
         elif Class == 1:
             for feature_index in range(len(feature_vector)):
                 if feature_vector[feature_index] == 1:
-                    log_likelihood += None
+                    log_likelihood += self.log_prior_1[0, feature_index]
                 elif feature_vector[feature_index] == 0:
-                    log_likelihood += None
-
-        return None
+                    log_likelihood += 0
+        print(log_likelihood)
+        return log_likelihood
 
 
     """
@@ -195,11 +197,13 @@ class Naive_Bayes_Classifier(object):
     """
 
     def class_posteriors(self, feature_vector):
+        # print(f'class_posteriors {feature_vector}')
         log_likelihood_0 = self.log_likelihoods_naivebayes(feature_vector, Class = 0)
         log_likelihood_1 = self.log_likelihoods_naivebayes(feature_vector, Class = 1)
 
-        log_posterior_0 = log_likelihood_0 - np.log(0,5)
-        log_posterior_1 = log_likelihood_1 - np.log(0,5)
+        log_posterior_0 = log_likelihood_0 - np.log(0.5)
+        log_posterior_1 = log_likelihood_1 - np.log(0.5)
+        print(log_posterior_0)
 
         return (log_posterior_0, log_posterior_1)
 
@@ -212,12 +216,12 @@ class Naive_Bayes_Classifier(object):
 
     def classify(self, feature_vector):
         prob_0, prob_1 = self.class_posteriors(feature_vector)
+        # print(f'prob_0 {prob_0}')
         if prob_0 >= prob_1:
             return 0
         else:
             return 1
 
-    ​
 
     """
     Req 3-1-4.
@@ -267,7 +271,7 @@ class Naive_Bayes_Classifier(object):
         # smoothing을 사용하여 각 클래스에 해당되는 likelihood값 계산
         # 0이 되는 경우 방지 smoothing
         # 단어당 긍정/부정 확률
-        #  / 전체 중 부정 개수
+        # 전체 중 단어가 부정일 확률(단어 부정개수/전체 개수) / 전체 중 부정 개수
         self.likelihoods_0 = (num_token_0 + smoothing) / (num_0 + smoothing)
         self.likelihoods_1 = (num_token_1 + smoothing) / (num_1 + smoothing)
 
@@ -276,10 +280,10 @@ class Naive_Bayes_Classifier(object):
         prior_probability_1 = num_1 / (num_0 + num_1)
 
         # prior의 log값 계
-        self.log_prior_0 = np.log(self.likelihoods_0 / prior_probability_0)
-        self.log_prior_1 = np.log(self.likelihoods_1 / prior_probability_1)
-        # print(self.log_prior_0)
-        # print(self.log_prior_1)
+        self.log_prior_0 = np.log(self.likelihoods_0 * prior_probability_0)
+        self.log_prior_1 = np.log(self.likelihoods_1 * prior_probability_1)
+        print(self.log_prior_0)
+        print(self.log_prior_1)
         return None
 
     """
@@ -290,16 +294,16 @@ class Naive_Bayes_Classifier(object):
 
     def predict(self, X_test):
         predictions = []
-        X_test=X_test.toarray()
+        X_test = X_test.toarray()
         if (len(X_test)==1):
             predictions.append(self.classify(X_test[0]))
         else:
             for case in X_test:
-                predictions.append(self.classify(X_test[0]))
+                predictions.append(self.classify(case))
 
         return predictions
 
-    '''
+
     """
     Req 3-1-6.
     score():
@@ -308,9 +312,14 @@ class Naive_Bayes_Classifier(object):
     """
  
     def score(self, X_test, Y_test):
+        same = 0
+        X_pred = self.predict(X_test)
+        for x in range(len(X_pred)):
+            if X_pred[x] == Y_test[x]:
+                same += 1
 
-        return None
-
+        return same / len(X_pred)
+'''
 # Req 3-2-1. model에 Naive_Bayes_Classifier 클래스를 사용하여 학습합니다.
 model = None
 
@@ -451,9 +460,10 @@ model2 = None
 # Req 3-4-2. 정확도 측정
 print("Logistic_Regression_Classifier accuracy: {}".format(None))
 
+
 '''
 
-
 model = Naive_Bayes_Classifier()
-a = model.train(X, Y)
-print(a)
+model.train(X, Y)
+print(model.predict(X_test))
+
